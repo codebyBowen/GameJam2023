@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class BossMove : StateMachineBehaviour
 {
-    [SerializeField] Transform player;
-    [SerializeField] Rigidbody2D rb;
-    [SerializeField] BringerOfDeath boss;
+    Transform player;
+    Rigidbody2D rb;
+    BringerOfDeath boss;
 
     public float speed = 2.5f;
     public float attackRange = 3f;

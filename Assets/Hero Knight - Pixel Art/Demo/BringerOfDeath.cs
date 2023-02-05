@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 // using System.Math;
 using System;
@@ -20,6 +20,8 @@ public class BringerOfDeath : MonoBehaviour {
     [SerializeField] float      m_slip_time = 1.0f;
 
 
+    public bool isFlipped = false;
+    public Transform player;
 
     [SerializeField] private Animator            m_animator;
     // private Rigidbody2D         m_body2d;
@@ -57,6 +59,8 @@ public class BringerOfDeath : MonoBehaviour {
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
         // m_ice_skater = true;
+
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     // Update is called once per frame
@@ -222,5 +226,31 @@ public class BringerOfDeath : MonoBehaviour {
             // Turn arrow in correct direction
             dust.transform.localScale = new Vector3(m_facingDirection, 1, 1);
         }
+    }
+
+    public void LookAtPlayer()
+    {
+        Vector3 flipped = transform.localScale;
+		flipped.z *= -1f;
+
+        Debug.Log("transform.position.x,  player.position.x, isFlipped" + transform.position.x + ", " + player.position.x + ", " + isFlipped);
+
+		if (transform.position.x > player.position.x && isFlipped)
+		{
+			transform.localScale = flipped;
+			transform.Rotate(0f, 180f, 0f);
+			isFlipped = false;
+		}
+		else if (transform.position.x < player.position.x && !isFlipped)
+		{
+			transform.localScale = flipped;
+			transform.Rotate(0f, 180f, 0f);
+			isFlipped = true;
+		}
+    }
+
+    public bool CanAttack()
+    {
+        return m_timeSinceAttack > 0.25f;
     }
 }

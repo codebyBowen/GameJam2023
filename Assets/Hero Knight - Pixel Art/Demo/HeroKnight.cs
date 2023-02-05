@@ -259,7 +259,7 @@ public class HeroKnight : MonoBehaviour {
     int isHitOnRhythm = -1;
 
     void ShowOnRhythm() {
-        Debug.Log("m_timeSinceAttack " + m_timeSinceAttack);
+        // Debug.Log("m_timeSinceAttack " + m_timeSinceAttack);
         
         if (m_timeSinceAttack >= 0 && m_timeSinceAttack < 0.3f) {
             if (isHitOnRhythm < 0) {

@@ -21,7 +21,7 @@ public class HeroKnight : MonoBehaviour {
     public bool onRhythm = false; 
 
     public float attackRange = 0.5f;
-    public int attackDamage = 45;
+    public int attackDamage = 40;
     public float attackRate = 2;
     public Transform attackPoint;
     public LayerMask enemyLayers;
@@ -295,15 +295,15 @@ public class HeroKnight : MonoBehaviour {
     void ReceiveDamage(int damage) {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
-        PlayerDie();
+        if (currentHealth <= 0 ) {
+            PlayerDie();    
+        }
     }
     // Death
     void PlayerDie() {
-        if (currentHealth <= 0 ) {
-            m_animator.SetBool("noBlood", m_noBlood);
-            m_animator.SetTrigger("Death");
-            this.enabled = false;
-            // GetComponent<Collider2D>().enabled = false;
-        }
+        m_animator.SetBool("noBlood", m_noBlood);
+        m_animator.SetTrigger("Death");
+        this.enabled = false;
+        // GetComponent<Collider2D>().enabled = false;  
     }
 }

@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
-    public int maxHealth = 100;
-    int currentHealth;
+    public int maxHealth = 1000;
+    public int currentHealth;
     public Animator animator;
+    public BossHealthBar bossHealthBar;
 
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = maxHealth;    
+        currentHealth = maxHealth; 
+        bossHealthBar.SetMaxHealth(maxHealth);   
     }
 
     public void TakeDamage(int damage) {
         currentHealth -= damage;
-
+        bossHealthBar.SetHealth(currentHealth);
         animator.SetTrigger("Hurt");
 
         if (currentHealth <= 0) {

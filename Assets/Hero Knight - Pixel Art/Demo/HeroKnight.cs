@@ -21,12 +21,15 @@ public class HeroKnight : MonoBehaviour {
     public bool onRhythm = false; 
 
     public float attackRange = 0.5f;
-    public int attackDamage = 40;
+    public int attackDamage = 45;
     public float attackRate = 2;
     public Transform attackPoint;
     public LayerMask enemyLayers;
 
-
+    // health system
+    public int maxHealth = 100;
+    public int currentHealth = 100;
+    public HealthBar healthBar;
 
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
@@ -64,9 +67,9 @@ public class HeroKnight : MonoBehaviour {
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
-        // m_attackSensor = transform.Find("AttackSensor").gameObject;
-        // m_ice_skater = true;
-        
+
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
     }
 
     // Update is called once per frame
@@ -145,9 +148,11 @@ public class HeroKnight : MonoBehaviour {
         }
             
         //Hurt
-        else if (Input.GetKeyDown("q") && !m_rolling)
+        else if (Input.GetKeyDown("q") && !m_rolling) {
             m_animator.SetTrigger("Hurt");
-
+            ReceiveDamage(1);
+        }
+            
         //Attack
         else if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
         {
@@ -283,6 +288,22 @@ public class HeroKnight : MonoBehaviour {
             attackDamage = 60;
         } else {
             attackDamage = 20;
+        }
+    }
+
+    // get hurt
+    void ReceiveDamage(int damage) {
+        currentHealth -= damage;
+        healthBar.SetHealth(currentHealth);
+        PlayerDie();
+    }
+    // Death
+    void PlayerDie() {
+        if (currentHealth <= 0 ) {
+            m_animator.SetBool("noBlood", m_noBlood);
+            m_animator.SetTrigger("Death");
+            this.enabled = false;
+            // GetComponent<Collider2D>().enabled = false;
         }
     }
 }

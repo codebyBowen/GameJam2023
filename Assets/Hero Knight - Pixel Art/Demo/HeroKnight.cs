@@ -325,17 +325,22 @@ public class HeroKnight : MonoBehaviour {
     }
 
     // get hurt
-    void ReceiveDamage(int damage) {
+    public void ReceiveDamage(int damage) {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
         if (currentHealth <= 0 ) {
             PlayerDie();    
         }
     }
+
     // Death
     void PlayerDie() {
+        if (m_animator.GetBool("IsDead")) {
+            return;
+        }
         m_animator.SetBool("noBlood", m_noBlood);
         m_animator.SetTrigger("Death");
+        m_animator.SetBool("IsDead", true);
         this.enabled = false;
         // GetComponent<Collider2D>().enabled = false;  
     }

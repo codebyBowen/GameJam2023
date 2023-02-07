@@ -9,7 +9,7 @@ public class BossMove : StateMachineBehaviour
     BringerOfDeath boss;
 
     public float speed = 2.5f;
-    public float attackRange = 3f;
+    public float attackRange = 4f;
 
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

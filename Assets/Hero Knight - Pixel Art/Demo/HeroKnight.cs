@@ -18,6 +18,7 @@ public class HeroKnight : MonoBehaviour {
     // [SerializeField] float      m_coefficient = 0.0f;
     // [SerializeField] float      m_acceleration = 0.0f;
     [SerializeField] float      m_slip_time = 1.0f;
+    private float elapsedTime = 0f;
     public bool onRhythm = false; 
 
     public float attackRange = 0.5f;
@@ -25,14 +26,21 @@ public class HeroKnight : MonoBehaviour {
     public float attackRate = 2;
     public Transform attackPoint;
     public LayerMask enemyLayers;
+    
 
     // health system
     public int maxHealth = 100;
     public int currentHealth = 100;
     public HealthBar healthBar;
 
+    // music energy system
+    public float musicEnergy = 0;
+    public float energyIncrement = 20.0f;
+    public float maxMusicEnergy = 100.0f;
+
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
+    private BoxCollider2D       m_collider2d;
     private Sensor_HeroKnight   m_groundSensor;
     private Sensor_HeroKnight   m_wallSensorR1;
     private Sensor_HeroKnight   m_wallSensorR2;
@@ -46,11 +54,11 @@ public class HeroKnight : MonoBehaviour {
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
-    private float               m_rollDuration = 8.0f / 14.0f;
+    private float               m_rollDuration = 1.0f;
     private float               m_rollCurrentTime;
     private float               timer = 0.0f;
-    public GameObject goodSignal;
-    public GameObject badSignal;
+    public GameObject           goodSignal;
+    public GameObject           badSignal;
 
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
@@ -62,6 +70,8 @@ public class HeroKnight : MonoBehaviour {
     {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
+        m_collider2d = GetComponent<BoxCollider2D>();
+
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
@@ -75,7 +85,9 @@ public class HeroKnight : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate ()
     {
+        elapsedTime += Time.fixedDeltaTime;
         ShowOnRhythm();
+        musicEnergyCalculation();
         // if (m_ice_skater) {
         //     m_coefficient = 1.2f;
         //     m_acceleration = -0.5f;
@@ -84,13 +96,19 @@ public class HeroKnight : MonoBehaviour {
         m_timeSinceAttack += Time.deltaTime;
 
         // Increase timer that checks roll duration
-        if(m_rolling)
+        if(m_rolling) {
             m_rollCurrentTime += Time.deltaTime;
+            GetComponent<Collider2D>().enabled = false;
+        }
+            
 
         // Disable rolling if timer extends duration
-        if(m_rollCurrentTime > m_rollDuration)
+        if(m_rollCurrentTime > m_rollDuration) {
+            m_rollCurrentTime = 0;
             m_rolling = false;
-
+            GetComponent<Collider2D>().enabled = true;
+        }
+            
         //Check if character just landed on the ground
         if (!m_grounded && m_groundSensor.State())
         {
@@ -197,18 +215,19 @@ public class HeroKnight : MonoBehaviour {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
+            // m_collider2d.enabled = false;
         }
             
 
-        //Jump
-        else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
-        {
-            m_animator.SetTrigger("Jump");
-            m_grounded = false;
-            m_animator.SetBool("Grounded", m_grounded);
-            m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
-            m_groundSensor.Disable(0.2f);
-        }
+        // Jump Banned
+        // else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
+        // {
+        //     m_animator.SetTrigger("Jump");
+        //     m_grounded = false;
+        //     m_animator.SetBool("Grounded", m_grounded);
+        //     m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
+        //     m_groundSensor.Disable(0.2f);
+        // }
 
         //Run
         else if (Mathf.Abs(inputX) > Mathf.Epsilon)
@@ -258,15 +277,29 @@ public class HeroKnight : MonoBehaviour {
 
     int isHitOnRhythm = -1;
 
+    void musicEnergyCalculation() {
+        if ( musicEnergy <= 0) {
+            musicEnergy = 0;
+            return;
+        } else if( musicEnergy <= maxMusicEnergy && musicEnergy >= 0) {
+            elapsedTime += Time.fixedDeltaTime;
+            if (elapsedTime >= 1) {
+                // decrease 5% of max energy per second
+                musicEnergy -= maxMusicEnergy * 0.05f;
+            }
+        }
+    }
+
     void ShowOnRhythm() {
         // Debug.Log("m_timeSinceAttack " + m_timeSinceAttack);
-        
         if (m_timeSinceAttack >= 0 && m_timeSinceAttack < 0.3f) {
             if (isHitOnRhythm < 0) {
                 if (onRhythm) {
                     isHitOnRhythm = 1;
+                    musicEnergy += energyIncrement;
                 } else {
                     isHitOnRhythm = 0;
+                    // musicEnergy -= energyIncrement / 2;
                 }
             }
 

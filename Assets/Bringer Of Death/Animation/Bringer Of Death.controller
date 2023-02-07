@@ -113,9 +113,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c227d941cf8337a49ae4d76377b90d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  rb: {fileID: 0}
-  boss: {fileID: 0}
   speed: 2.5
   attackRange: 3
 --- !u!1102 &-4296668185621246524

@@ -233,7 +233,7 @@ public class BringerOfDeath : MonoBehaviour {
         Vector3 flipped = transform.localScale;
 		flipped.z *= -1f;
 
-        Debug.Log("transform.position.x,  player.position.x, isFlipped" + transform.position.x + ", " + player.position.x + ", " + isFlipped);
+        // Debug.Log("transform.position.x,  player.position.x, isFlipped" + transform.position.x + ", " + player.position.x + ", " + isFlipped);
 
 		if (transform.position.x > player.position.x && isFlipped)
 		{

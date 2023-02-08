@@ -14,6 +14,9 @@ public class Boss : MonoBehaviour
     public float attackRange = 1f;
     public LayerMask attackMask;
 
+    public GameObject spellPrefab;
+    public Transform SpellGenerator;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,5 +68,26 @@ public class Boss : MonoBehaviour
         pos += transform.right * attackOffset.x;
         pos += transform.up * attackOffset.y;
         Gizmos.DrawWireSphere(pos, attackRange);
+    }
+
+    public void SummonSpell()
+    {
+        Debug.Log("Boss Summoning Spell");
+        // player.pos.y == -1.04, the spellPrefab need to be placed at 1.3,
+        // so offset = 1.3 + 1.04 = 2.34
+        Vector3 offset = new Vector3(0, 2.34f, 0);
+        if (SpellGenerator)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+        Debug.Log("Player " + player);
+            if (player)
+            {
+                Transform summonPoint = SpellGenerator.transform;
+                summonPoint.position = player.transform.position + offset;
+                // Summon above the player
+        Debug.Log("Summon point " + summonPoint);
+                Instantiate(spellPrefab, summonPoint.position, summonPoint.rotation);
+            }
+        }
     }
 }

@@ -11,6 +11,12 @@ public class BossMove : StateMachineBehaviour
     public float speed = 2.5f;
     public float attackRange = 4f;
 
+    public float castCoolOff = 4.0f;
+    public float firstCastAt = 1.0f;
+    int interval = 1; 
+    float nextTime = 0;
+    public int castProbabilityPercentage = 20;
+    float timeSinceCast = 0;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -20,28 +26,44 @@ public class BossMove : StateMachineBehaviour
        rb = animator.transform.parent.GetComponent<Rigidbody2D>();
 
        boss = animator.transform.parent.GetComponent<BringerOfDeath>();
+
+       timeSinceCast = 0;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       boss.LookAtPlayer();
+        timeSinceCast += Time.fixedDeltaTime;
+        boss.LookAtPlayer();
 
-       Vector2 target = new Vector2(player.position.x, rb.position.y);
-       Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
+        if (timeSinceCast > firstCastAt && !animator.GetBool("HasFirstCasted")) {
+            animator.SetTrigger("Cast");
+            animator.SetBool("HasFirstCasted", true);
+        }
+
+        Vector2 target = new Vector2(player.position.x, rb.position.y);
+        Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
 
 
-       if (Vector2.Distance(player.position, rb.position) <= attackRange) {
+        if (Vector2.Distance(player.position, rb.position) <= attackRange) {
             animator.SetTrigger("Attack");
-       } else {
+        } else {
+            // Check every interval, not checking every frame 
+            if (Time.time >= nextTime) {
+                if (Random.Range(0, 100) < castProbabilityPercentage && timeSinceCast > castCoolOff) {
+                    animator.SetTrigger("Cast");
+                }
+                nextTime += interval;
+            }
             rb.MovePosition(newPos);
-       }
+        }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
        animator.ResetTrigger("Attack");
+       timeSinceCast = 0;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

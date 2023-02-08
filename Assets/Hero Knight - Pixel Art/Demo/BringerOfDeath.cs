@@ -23,7 +23,7 @@ public class BringerOfDeath : MonoBehaviour {
     public bool isFlipped = false;
     public Transform player;
 
-    [SerializeField] private Animator            m_animator;
+    [SerializeField] public Animator            m_animator;
     // private Rigidbody2D         m_body2d;
     private BoxCollider2D       m_collider2d;
     private Sensor_HeroKnight   m_groundSensor;
@@ -50,7 +50,7 @@ public class BringerOfDeath : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        m_animator = GetComponent<Animator>();
+        // m_animator = GetComponent<Animator>();
         // m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();

@@ -16,19 +16,37 @@ public class Boss : MonoBehaviour
 
     public GameObject spellPrefab;
     public Transform SpellGenerator;
+    public int tenacity; // or called armor?
+    public bool armorBroken = false;
+
+    // break flags
+    private bool firstBreak = false;
+    private bool secondBreak = false;
 
     // Start is called before the first frame update
     void Start()
     {
         currentHealth = maxHealth; 
         bossHealthBar.SetMaxHealth(maxHealth);
+        tenacity = 1000;
+        armorBroken = false;
+        firstBreak = false;
+        secondBreak = false;
+    }
+
+    void FixedUpdate() {
+        tenacitySystem();
     }
 
     public void TakeDamage(int damage) {
-        currentHealth -= damage;
+        // take damage only when armor is broken
+        // currentHealth -= damage;
         bossHealthBar.SetHealth(currentHealth);
-        animator.SetTrigger("Hurt");
-
+        reduceTenacity(damage);
+        if (armorBroken) {
+            animator.SetTrigger("Hurt");
+            currentHealth -= damage;
+        }
         if (currentHealth <= 0) {
             Die();
         }
@@ -68,6 +86,27 @@ public class Boss : MonoBehaviour
         pos += transform.right * attackOffset.x;
         pos += transform.up * attackOffset.y;
         Gizmos.DrawWireSphere(pos, attackRange);
+    }
+
+    void reduceTenacity(int value) {
+        tenacity -= value;
+        Debug.Log("reduceTenacity" + value + "tenacity" + tenacity);
+    }
+
+    void tenacitySystem() {
+        // recover tenacity when health is below 2 of 3 and 1 of 3 max health
+        if ( !armorBroken && tenacity <= 0 ) {
+            armorBroken = true;
+            // TODO: play broken sound
+        } else if ( armorBroken && !secondBreak && (currentHealth <= (int)(maxHealth / 3))) {
+            armorBroken = false;
+            tenacity = 1200;
+            secondBreak = true;
+        } else if ( armorBroken && !firstBreak && (currentHealth <= (int)(maxHealth / 3 * 2))) {
+            armorBroken = false;
+            tenacity = 1100;
+            firstBreak = true;
+        } 
     }
 
     public void SummonSpell()

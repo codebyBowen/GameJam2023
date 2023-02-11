@@ -66,8 +66,6 @@ public class HeroKnight : MonoBehaviour {
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
 
-    private int enemyLayer;
-
 
     // Use this for initialization
     void Start ()
@@ -76,8 +74,6 @@ public class HeroKnight : MonoBehaviour {
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
 
-        enemyLayer = LayerMask.NameToLayer("Enemy");
-        Debug.Assert(enemyLayer != -1);
 
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<Sensor_HeroKnight>();
@@ -112,7 +108,7 @@ public class HeroKnight : MonoBehaviour {
         if(m_rollCurrentTime > m_rollDuration) {
             m_rollCurrentTime = 0;
             m_rolling = false;
-            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, false);
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayers, false);
         }
             
         //Check if character just landed on the ground
@@ -220,7 +216,7 @@ public class HeroKnight : MonoBehaviour {
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
-            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, true);
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayers, true);
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
         }
             

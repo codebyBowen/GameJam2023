@@ -3,7 +3,7 @@ using System.Collections;
 // using System.Math;
 using System;
 
-public class HeroKnight : MonoBehaviour {
+public class HeroKnight : CombatCharacter {
 
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
@@ -27,12 +27,6 @@ public class HeroKnight : MonoBehaviour {
     public Transform attackPoint;
     public LayerMask enemyLayers;
     
-
-    // health system
-    public int maxHealth = 100;
-    public int currentHealth = 100;
-    public HealthBar healthBar;
-
     // music energy system
     public float musicEnergy = 0;
     public float energyIncrement = 20.0f;
@@ -72,14 +66,13 @@ public class HeroKnight : MonoBehaviour {
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
 
+        health.dieCB = PlayerDie;
+
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
-
-        currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
     }
 
     // Update is called once per frame
@@ -168,7 +161,7 @@ public class HeroKnight : MonoBehaviour {
         //Hurt
         else if (Input.GetKeyDown("q") && !m_rolling) {
             m_animator.SetTrigger("Hurt");
-            ReceiveDamage(1);
+            health.changeHP(1);
         }
             
         //Attack
@@ -192,7 +185,7 @@ public class HeroKnight : MonoBehaviour {
 
             foreach(Collider2D enemy in hitEnemies) {
                 Debug.Log("Hit " + enemy.name);
-                enemy.GetComponent<Boss>().TakeDamage(attackDamage);
+                enemy.GetComponent<CombatCharacter>().takeDamage(new AttackProp(attackDamage));
             }
 
             // Reset timer
@@ -321,15 +314,6 @@ public class HeroKnight : MonoBehaviour {
             attackDamage = 60;
         } else {
             attackDamage = 20;
-        }
-    }
-
-    // get hurt
-    public void ReceiveDamage(int damage) {
-        currentHealth -= damage;
-        healthBar.SetHealth(currentHealth);
-        if (currentHealth <= 0 ) {
-            PlayerDie();    
         }
     }
 

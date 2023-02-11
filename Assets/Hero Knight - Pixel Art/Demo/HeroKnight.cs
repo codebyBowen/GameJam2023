@@ -5,8 +5,8 @@ using System;
 
 public class HeroKnight : MonoBehaviour {
 
-    [SerializeField] KeyCode m_key_attack = KeyCode.L;
-    [SerializeField] KeyCode m_key_block = KeyCode.LeftBracket;
+    [SerializeField] public KeyCode m_key_attack = KeyCode.L;
+    [SerializeField] public KeyCode m_key_block = KeyCode.LeftBracket;
 
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
@@ -212,7 +212,7 @@ public class HeroKnight : MonoBehaviour {
             m_animator.SetBool("IdleBlock", true);
         }
 
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetKeyUp(m_key_block))
             m_animator.SetBool("IdleBlock", false);
 
         // Roll

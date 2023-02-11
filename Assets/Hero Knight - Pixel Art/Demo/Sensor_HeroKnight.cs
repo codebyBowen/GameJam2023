@@ -7,6 +7,13 @@ public class Sensor_HeroKnight : MonoBehaviour {
 
     private float m_DisableTimer;
 
+    private int layer_env;
+
+    private void Start() {
+      layer_env = LayerMask.NameToLayer("Environment");
+      Debug.Assert(layer_env != -1);
+    }
+
     private void OnEnable()
     {
         m_ColCount = 0;
@@ -21,12 +28,18 @@ public class Sensor_HeroKnight : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        m_ColCount++;
+        //TODO: handle this properly
+        if(other.gameObject.layer == layer_env) {
+          m_ColCount++;
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        m_ColCount--;
+        //TODO: handle this properly
+        if(other.gameObject.layer == layer_env) {
+          m_ColCount--;
+        }
     }
 
     void FixedUpdate()

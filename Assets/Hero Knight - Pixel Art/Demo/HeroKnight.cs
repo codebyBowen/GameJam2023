@@ -5,6 +5,9 @@ using System;
 
 public class HeroKnight : MonoBehaviour {
 
+    [SerializeField] KeyCode m_key_attack = KeyCode.L;
+    [SerializeField] KeyCode m_key_block = KeyCode.LeftBracket;
+
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
     [SerializeField] float      m_rollForce = 6.0f;
@@ -63,6 +66,7 @@ public class HeroKnight : MonoBehaviour {
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
 
+    private int enemyLayer;
 
 
     // Use this for initialization
@@ -71,6 +75,9 @@ public class HeroKnight : MonoBehaviour {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
+
+        enemyLayer = LayerMask.NameToLayer("Enemy");
+        Debug.Assert(enemyLayer != -1);
 
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<Sensor_HeroKnight>();
@@ -98,7 +105,6 @@ public class HeroKnight : MonoBehaviour {
         // Increase timer that checks roll duration
         if(m_rolling) {
             m_rollCurrentTime += Time.deltaTime;
-            GetComponent<Collider2D>().enabled = false;
         }
             
 
@@ -106,7 +112,7 @@ public class HeroKnight : MonoBehaviour {
         if(m_rollCurrentTime > m_rollDuration) {
             m_rollCurrentTime = 0;
             m_rolling = false;
-            GetComponent<Collider2D>().enabled = true;
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, false);
         }
             
         //Check if character just landed on the ground
@@ -172,7 +178,7 @@ public class HeroKnight : MonoBehaviour {
         }
             
         //Attack
-        else if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
+        else if(Input.GetKeyDown(m_key_attack) && m_timeSinceAttack > 0.25f && !m_rolling)
         {
             OnRhythmAttack();
             m_currentAttack++;
@@ -200,7 +206,7 @@ public class HeroKnight : MonoBehaviour {
         }
 
         // Block
-        else if (Input.GetMouseButtonDown(1) && !m_rolling)
+        else if (Input.GetKeyDown(m_key_block) && !m_rolling)
         {
             m_animator.SetTrigger("Block");
             m_animator.SetBool("IdleBlock", true);
@@ -214,20 +220,20 @@ public class HeroKnight : MonoBehaviour {
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, true);
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
-            // m_collider2d.enabled = false;
         }
             
 
-        // Jump Banned
-        // else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
-        // {
-        //     m_animator.SetTrigger("Jump");
-        //     m_grounded = false;
-        //     m_animator.SetBool("Grounded", m_grounded);
-        //     m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
-        //     m_groundSensor.Disable(0.2f);
-        // }
+        // Jump
+        else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
+        {
+            m_animator.SetTrigger("Jump");
+            m_grounded = false;
+            m_animator.SetBool("Grounded", m_grounded);
+            m_body2d.velocity += new Vector2(0, m_jumpForce);
+            m_groundSensor.Disable(0.2f);
+        }
 
         //Run
         else if (Mathf.Abs(inputX) > Mathf.Epsilon)
@@ -342,6 +348,5 @@ public class HeroKnight : MonoBehaviour {
         m_animator.SetTrigger("Death");
         m_animator.SetBool("IsDead", true);
         this.enabled = false;
-        // GetComponent<Collider2D>().enabled = false;  
     }
 }

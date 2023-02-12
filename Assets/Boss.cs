@@ -76,6 +76,11 @@ public class Boss : CombatCharacter
         }
     }
 
+    public void Disappear()
+    {
+        GetComponent<SpriteRenderer>().enabled = false;
+    }
+
     void OnDrawGizmosSelected() 
     {
         Vector3 pos = transform.position;

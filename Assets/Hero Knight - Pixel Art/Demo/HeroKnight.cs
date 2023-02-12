@@ -5,6 +5,9 @@ using System;
 
 public class HeroKnight : CombatCharacter {
 
+    [SerializeField] public KeyCode m_key_attack = KeyCode.L;
+    [SerializeField] public KeyCode m_key_block = KeyCode.LeftBracket;
+
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
     [SerializeField] float      m_rollForce = 6.0f;
@@ -18,7 +21,7 @@ public class HeroKnight : CombatCharacter {
     // [SerializeField] float      m_coefficient = 0.0f;
     // [SerializeField] float      m_acceleration = 0.0f;
     [SerializeField] float      m_slip_time = 1.0f;
-    private float elapsedTime = 0f;
+    public float elapsedTime = 0f;
     public bool onRhythm = false; 
 
     public float attackRange = 0.5f;
@@ -26,6 +29,7 @@ public class HeroKnight : CombatCharacter {
     public float attackRate = 2;
     public Transform attackPoint;
     public LayerMask enemyLayers;
+    public bool isExactBlock = false;
     
     // music energy system
     public float musicEnergy = 0;
@@ -45,18 +49,22 @@ public class HeroKnight : CombatCharacter {
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     private int                 m_facingDirection = 1;
+    private int                 prev_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 1.0f;
     private float               m_rollCurrentTime;
     private float               timer = 0.0f;
+    private float               blockDuration = 0.5f;
+    private float               exactBlockDuration = 0.2f;
+    public float                exactBlockTime; 
+    [SerializeField] int        blockDamage = 0;
     public GameObject           goodSignal;
     public GameObject           badSignal;
 
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
-
 
 
     // Use this for initialization
@@ -65,7 +73,6 @@ public class HeroKnight : CombatCharacter {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
-
         health.dieCB = PlayerDie;
 
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
@@ -73,14 +80,22 @@ public class HeroKnight : CombatCharacter {
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
+
+        energyBar.SetMaxEnergy(maxMusicEnergy);
+        energyBar.SetEnergy(musicEnergy);
+        exactBlockTime = 0;
+        blockDamage = 0;
+        isExactBlock = false;
     }
 
     // Update is called once per frame
     void FixedUpdate ()
     {
-        elapsedTime += Time.fixedDeltaTime;
         ShowOnRhythm();
         musicEnergyCalculation();
+        if (exactBlockTime > 0) {
+            DamageBlockCalculation();
+        }
         // if (m_ice_skater) {
         //     m_coefficient = 1.2f;
         //     m_acceleration = -0.5f;
@@ -91,7 +106,6 @@ public class HeroKnight : CombatCharacter {
         // Increase timer that checks roll duration
         if(m_rolling) {
             m_rollCurrentTime += Time.deltaTime;
-            GetComponent<Collider2D>().enabled = false;
         }
             
 
@@ -99,7 +113,7 @@ public class HeroKnight : CombatCharacter {
         if(m_rollCurrentTime > m_rollDuration) {
             m_rollCurrentTime = 0;
             m_rolling = false;
-            GetComponent<Collider2D>().enabled = true;
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayers, false);
         }
             
         //Check if character just landed on the ground
@@ -134,6 +148,12 @@ public class HeroKnight : CombatCharacter {
             timer = 0.0f;
         }
 
+        if (m_facingDirection != prev_facingDirection) {
+            Vector3 newPosition = attackPoint.localPosition;
+            newPosition.x *= -1;
+            attackPoint.localPosition = newPosition;
+        }
+
         // Move
         if (!m_rolling )
             m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
@@ -165,7 +185,7 @@ public class HeroKnight : CombatCharacter {
         }
             
         //Attack
-        else if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
+        else if(Input.GetKeyDown(m_key_attack) && m_timeSinceAttack > 0.25f && !m_rolling)
         {
             OnRhythmAttack();
             m_currentAttack++;
@@ -193,13 +213,17 @@ public class HeroKnight : CombatCharacter {
         }
 
         // Block
-        else if (Input.GetMouseButtonDown(1) && !m_rolling)
+        else if (Input.GetKeyDown(m_key_block) && !m_rolling)
         {
+            OnRhythmBlock();
             m_animator.SetTrigger("Block");
             m_animator.SetBool("IdleBlock", true);
+            DamageBlockCalculation();
+            // counting exact blocking time 
+            
         }
 
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetKeyUp(m_key_block))
             m_animator.SetBool("IdleBlock", false);
 
         // Roll
@@ -207,20 +231,20 @@ public class HeroKnight : CombatCharacter {
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayers, true);
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
-            // m_collider2d.enabled = false;
         }
             
 
-        // Jump Banned
-        // else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
-        // {
-        //     m_animator.SetTrigger("Jump");
-        //     m_grounded = false;
-        //     m_animator.SetBool("Grounded", m_grounded);
-        //     m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
-        //     m_groundSensor.Disable(0.2f);
-        // }
+        // Jump
+        else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
+        {
+            m_animator.SetTrigger("Jump");
+            m_grounded = false;
+            m_animator.SetBool("Grounded", m_grounded);
+            m_body2d.velocity += new Vector2(0, m_jumpForce);
+            m_groundSensor.Disable(0.2f);
+        }
 
         //Run
         else if (Mathf.Abs(inputX) > Mathf.Epsilon)
@@ -238,6 +262,8 @@ public class HeroKnight : CombatCharacter {
                 if(m_delayToIdle < 0)
                     m_animator.SetInteger("AnimState", 0);
         }
+
+        prev_facingDirection = m_facingDirection;
     }
 
     // Animation Events
@@ -274,11 +300,18 @@ public class HeroKnight : CombatCharacter {
         if ( musicEnergy <= 0) {
             musicEnergy = 0;
             return;
-        } else if( musicEnergy <= maxMusicEnergy && musicEnergy >= 0) {
-            elapsedTime += Time.fixedDeltaTime;
-            if (elapsedTime >= 1) {
-                // decrease 5% of max energy per second
-                musicEnergy -= maxMusicEnergy * 0.05f;
+        } else if( musicEnergy < maxMusicEnergy && musicEnergy >= 0) {
+            // decrease 5% of max energy per second
+            musicEnergy -= maxMusicEnergy * 0.05f * Time.fixedDeltaTime;
+            energyBar.SetEnergy(musicEnergy);
+        } else {
+            elapsedTime += Time.fixedDeltaTime;         
+            // keep max energy for 2 seconds
+            if (elapsedTime >= 2.0f) {
+                musicEnergy = 99.9f;
+                elapsedTime = 0;
+            } else {
+                musicEnergy = 100.0f;
             }
         }
     }
@@ -290,6 +323,7 @@ public class HeroKnight : CombatCharacter {
                 if (onRhythm) {
                     isHitOnRhythm = 1;
                     musicEnergy += energyIncrement;
+                    energyBar.SetEnergy(musicEnergy);
                 } else {
                     isHitOnRhythm = 0;
                     // musicEnergy -= energyIncrement / 2;
@@ -317,6 +351,30 @@ public class HeroKnight : CombatCharacter {
         }
     }
 
+    // Defence
+    void OnRhythmBlock() {
+        // Debug.Log("onRhythm" + onRhythm);
+        if (onRhythm) {
+            blockDamage = 20;
+        } else {
+            blockDamage = 5;
+        }
+    }
+
+    void DamageBlockCalculation() {
+        Debug.Log("DamageBlockCalculationWorks" );
+        exactBlockTime += Time.fixedDeltaTime;
+        if (exactBlockTime >= blockDuration) {
+            blockDamage = 0;
+            exactBlockTime = 0;
+        } else if (exactBlockTime <= exactBlockDuration && exactBlockTime >= 0) {
+            blockDamage = 20;
+            isExactBlock = true;
+        } else {
+            isExactBlock = false;
+        }
+    } 
+
     // Death
     void PlayerDie() {
         if (m_animator.GetBool("IsDead")) {
@@ -326,6 +384,5 @@ public class HeroKnight : CombatCharacter {
         m_animator.SetTrigger("Death");
         m_animator.SetBool("IsDead", true);
         this.enabled = false;
-        // GetComponent<Collider2D>().enabled = false;  
     }
 }

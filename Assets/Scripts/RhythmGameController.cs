@@ -41,10 +41,9 @@ public class RhythmGameController : MonoBehaviour
                 isActive = true;
                 onRhythm = true;
 
-                if (Input.GetMouseButton(0))
+                if (Input.GetKeyDown(player.GetComponent<HeroKnight>().m_key_attack))
                 {
-                    // Correct mouse click
-                    Debug.Log("Correct mouse click");
+                    Debug.Log("Correct attack timing");
                     player.GetComponent<HeroKnight>().onRhythm = true;
                 } else {
                     player.GetComponent<HeroKnight>().onRhythm = false;

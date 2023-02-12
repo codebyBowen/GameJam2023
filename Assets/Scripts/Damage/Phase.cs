@@ -1,4 +1,4 @@
-public enum Phases {
+public enum Phase {
   none,
   Metal,
   Wood,

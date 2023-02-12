@@ -113,7 +113,9 @@ public class HeroKnight : CombatCharacter {
         if(m_rollCurrentTime > m_rollDuration) {
             m_rollCurrentTime = 0;
             m_rolling = false;
-            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayers, false);
+            foreach(int eLayer in Utils.layersFromLayerMask(enemyLayers)) {
+              Physics2D.IgnoreLayerCollision(gameObject.layer, eLayer, false);
+            }
         }
             
         //Check if character just landed on the ground
@@ -231,7 +233,9 @@ public class HeroKnight : CombatCharacter {
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
-            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayers, true);
+            foreach(int eLayer in Utils.layersFromLayerMask(enemyLayers)) {
+              Physics2D.IgnoreLayerCollision(gameObject.layer, eLayer, true);
+            }
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
         }
             

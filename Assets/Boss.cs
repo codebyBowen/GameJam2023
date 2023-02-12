@@ -6,7 +6,6 @@ public class Boss : CombatCharacter
 {
     public Animator animator;
 
-    public int attackDamage = 20;
     public Vector3 attackOffset;
     public float attackRange = 1f;
     public LayerMask attackMask;
@@ -72,7 +71,7 @@ public class Boss : CombatCharacter
         if (colInfo != null)
         {
             Debug.Log("Boss Hit Player!!");
-            colInfo.GetComponent<CombatCharacter>().takeDamage(new AttackProp(attackDamage));
+            colInfo.GetComponent<CombatCharacter>().takeDamage(attProp);
         }
     }
 

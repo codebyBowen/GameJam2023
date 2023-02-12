@@ -6,6 +6,7 @@ public class HeroKnight : CombatCharacter {
 
     [SerializeField] public KeyCode m_key_attack = KeyCode.L;
     [SerializeField] public KeyCode m_key_block = KeyCode.P;
+    [SerializeField] public KeyCode m_key_changePhase = KeyCode.Y;
 
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
@@ -114,11 +115,21 @@ public class HeroKnight : CombatCharacter {
       colorSwap.ClearAllSpritesColors();
       if(newP != Phase.none) {
         colorSwap.SwapColors(phaseColors[(int)newP]);
+        switch(newP) {
+          case Phase.Fire: {
+            Burn.attach(gameObject, 2.0F, 10.0F);
+            break;
+          }
+        }
       }
     }
 
     public void takeDamage(AttackProp ap) {
-      float finalDamage = Math.Max(0, Damage.calPhaseAddedDamage(ap, attProp) - blockDamage);
+      float damage = Damage.calPhaseAddedDamage(ap, attProp);
+      if(ap.damageType == DamageType.Physical) {
+        damage -= blockDamage;
+      }
+      float finalDamage = Math.Max(0, damage);
 
       health.changeHP(-finalDamage);
     }
@@ -285,6 +296,14 @@ public class HeroKnight : CombatCharacter {
             m_groundSensor.Disable(0.2f);
         }
 
+        // Change Phase
+        else if (Input.GetKeyDown(m_key_changePhase) && musicEnergy == maxMusicEnergy) {
+          // TODO: allow player to choose what phase to change to?
+          var vals = Enum.GetValues(typeof(Phase));
+          attProp.setPhase((Phase)vals.GetValue(UnityEngine.Random.Range(0, vals.Length)));
+          setMusicEnergy(0);
+        }
+
         //Run
         else if (Mathf.Abs(inputX) > Mathf.Epsilon)
         {
@@ -335,22 +354,26 @@ public class HeroKnight : CombatCharacter {
 
     int isHitOnRhythm = -1;
 
+    void setMusicEnergy(float newEnergy) {
+      musicEnergy = newEnergy;
+      energyBar.SetEnergy(musicEnergy);
+    }
+
     void musicEnergyCalculation() {
         if ( musicEnergy <= 0) {
-            musicEnergy = 0;
+            setMusicEnergy(0);
             return;
         } else if( musicEnergy < maxMusicEnergy && musicEnergy >= 0) {
             // decrease 5% of max energy per second
-            musicEnergy -= maxMusicEnergy * 0.05f * Time.fixedDeltaTime;
-            energyBar.SetEnergy(musicEnergy);
+            setMusicEnergy(musicEnergy - maxMusicEnergy * 0.05f * Time.fixedDeltaTime);
         } else {
             elapsedTime += Time.fixedDeltaTime;         
             // keep max energy for 2 seconds
             if (elapsedTime >= 2.0f) {
-                musicEnergy = 99.9f;
+                setMusicEnergy(99.9f);
                 elapsedTime = 0;
             } else {
-                musicEnergy = 100.0f;
+                setMusicEnergy(maxMusicEnergy);
             }
         }
     }
@@ -361,8 +384,7 @@ public class HeroKnight : CombatCharacter {
             if (isHitOnRhythm < 0) {
                 if (onRhythm) {
                     isHitOnRhythm = 1;
-                    musicEnergy += energyIncrement;
-                    energyBar.SetEnergy(musicEnergy);
+                    setMusicEnergy(musicEnergy + energyIncrement);
                 } else {
                     isHitOnRhythm = 0;
                     // musicEnergy -= energyIncrement / 2;

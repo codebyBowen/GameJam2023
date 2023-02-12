@@ -62,6 +62,11 @@ public class Boss : MonoBehaviour
         }
     }
 
+    public void Disappear()
+    {
+        GetComponent<SpriteRenderer>().enabled = false;
+    }
+
     void OnDrawGizmosSelected() 
     {
         Vector3 pos = transform.position;

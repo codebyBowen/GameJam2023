@@ -618,7 +618,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 304871931}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Environment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -660,6 +660,7 @@ GameObject:
   - component: {fileID: 312039195}
   - component: {fileID: 312039193}
   - component: {fileID: 312039196}
+  - component: {fileID: 312039190}
   m_Layer: 6
   m_Name: Bringer Of Death
   m_TagString: Untagged
@@ -667,6 +668,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!60 &312039190
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312039189}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.026982544, y: 0.5682792}
+      - {x: -0.19329654, y: 0.34049666}
+      - {x: -0.1650586, y: 0.00045940932}
+      - {x: 0.12233633, y: -0.0017890213}
+      - {x: 0.166314, y: 0.32025987}
 --- !u!4 &312039192
 Transform:
   m_ObjectHideFlags: 0
@@ -719,7 +750,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 312039189}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -835,7 +866,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!82 &488493234
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1240,7 +1271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 701530808}
   - component: {fileID: 701530809}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Background (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1509,7 +1540,7 @@ GameObject:
   m_Component:
   - component: {fileID: 947273195}
   - component: {fileID: 947273196}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1816,7 +1847,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1171535386}
   - component: {fileID: 1171535387}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1898,7 +1929,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1210760371}
   - component: {fileID: 1210760372}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Background (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1981,7 +2012,7 @@ GameObject:
   - component: {fileID: 1215298106}
   - component: {fileID: 1215298109}
   - component: {fileID: 1215298108}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2852,7 +2883,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1315516216}
   - component: {fileID: 1315516217}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GroundCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2969,7 +3000,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1384924521}
   - component: {fileID: 1384924522}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3074,7 +3105,7 @@ GameObject:
   - component: {fileID: 1463474979}
   - component: {fileID: 1463474981}
   - component: {fileID: 1463474980}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlatformCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3320,6 +3351,36 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1669486824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1669486825}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1669486825
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669486824}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.7634709, y: 0.34093094, z: -0.74996394}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1693071107
 GameObject:
   m_ObjectHideFlags: 0
@@ -3595,6 +3656,10 @@ MonoBehaviour:
   attackMask:
     serializedVersion: 2
     m_Bits: 128
+  spellPrefab: {fileID: 4409766667928789182, guid: 20a49f95a61d0b946b112c0479a6feb3, type: 3}
+  SpellGenerator: {fileID: 1669486825}
+  tenacity: 0
+  armorBroken: 0
 --- !u!1 &1837476536
 GameObject:
   m_ObjectHideFlags: 0
@@ -3907,7 +3972,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2004733770}
   - component: {fileID: 2004733771}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallColliderLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4024,7 +4089,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2056330353}
   - component: {fileID: 2056330354}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Background (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4304,7 +4369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8942925490989933264, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
       propertyPath: m_GravityScale
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
       propertyPath: badSignal

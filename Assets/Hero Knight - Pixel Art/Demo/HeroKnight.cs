@@ -32,6 +32,7 @@ public class HeroKnight : CombatCharacter {
     public bool isExactBlock = false;
     
     // music energy system
+    public EnergyBar energyBar
     public float musicEnergy = 0;
     public float energyIncrement = 20.0f;
     public float maxMusicEnergy = 100.0f;

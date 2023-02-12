@@ -26,13 +26,11 @@ public class Boss : CombatCharacter
         armorBroken = false;
         firstBreak = false;
         secondBreak = false;
+
+        health.dieCB = Die;
     }
 
     void FixedUpdate() {
-        // FIXME: weird bug when put in Start and sometimes, health is null
-        if(health != null) {  
-          health.dieCB = Die;
-        }
         tenacitySystem();
     }
 

@@ -161,7 +161,7 @@ public class HeroKnight : CombatCharacter {
         //Hurt
         else if (Input.GetKeyDown("q") && !m_rolling) {
             m_animator.SetTrigger("Hurt");
-            health.changeHP(1);
+            health.changeHP(-1);
         }
             
         //Attack

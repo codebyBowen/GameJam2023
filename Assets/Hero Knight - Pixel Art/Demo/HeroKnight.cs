@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-// using System.Math;
 using System;
 
 public class HeroKnight : CombatCharacter {
@@ -116,6 +115,12 @@ public class HeroKnight : CombatCharacter {
       if(newP != Phase.none) {
         colorSwap.SwapColors(phaseColors[(int)newP]);
       }
+    }
+
+    public void takeDamage(AttackProp ap) {
+      float finalDamage = Math.Max(0, Damage.calPhaseAddedDamage(ap, attProp) - blockDamage);
+
+      health.changeHP(-finalDamage);
     }
 
     // Update is called once per frame

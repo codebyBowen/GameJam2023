@@ -18,7 +18,7 @@ public class AttackProp : MonoBehaviour {
   public void setPhase(Phase newP) {
     Phase oldP = phase;
     phase = newP;
-    if(phase != newP && onPhaseChange != null) {
+    if(oldP != newP && onPhaseChange != null) {
       onPhaseChange(oldP, newP);
     }
   }

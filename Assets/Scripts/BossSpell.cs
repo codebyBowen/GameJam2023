@@ -25,7 +25,7 @@ public class BossSpell : MonoBehaviour
 
         if (colInfo != null)
         {
-            colInfo.GetComponent<HeroKnight>().ReceiveDamage(attackDamage);
+            colInfo.GetComponent<Health>().changeHP(-attackDamage);
         }
     }
 

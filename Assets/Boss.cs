@@ -2,12 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boss : MonoBehaviour
+public class Boss : CombatCharacter
 {
-    public int maxHealth = 1000;
-    public int currentHealth;
     public Animator animator;
-    public BossHealthBar bossHealthBar;
 
     public int attackDamage = 20;
     public Vector3 attackOffset;
@@ -16,7 +13,7 @@ public class Boss : MonoBehaviour
 
     public GameObject spellPrefab;
     public Transform SpellGenerator;
-    public int tenacity; // or called armor?
+    public float tenacity; // or called armor?
     public bool armorBroken = false;
 
     // break flags
@@ -26,8 +23,6 @@ public class Boss : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = maxHealth; 
-        bossHealthBar.SetMaxHealth(maxHealth);
         tenacity = 1000;
         armorBroken = false;
         firstBreak = false;
@@ -35,20 +30,20 @@ public class Boss : MonoBehaviour
     }
 
     void FixedUpdate() {
+        // FIXME: weird bug when put in Start and sometimes, health is null
+        if(health != null) {  
+          health.dieCB = Die;
+        }
         tenacitySystem();
     }
 
-    public void TakeDamage(int damage) {
+    public void takeDamage(AttackProp ap) {
         // take damage only when armor is broken
         // currentHealth -= damage;
-        bossHealthBar.SetHealth(currentHealth);
-        reduceTenacity(damage);
+        reduceTenacity(ap.baseDamage);
         if (armorBroken) {
             animator.SetTrigger("Hurt");
-            currentHealth -= damage;
-        }
-        if (currentHealth <= 0) {
-            Die();
+            health.changeHP(-ap.baseDamage);
         }
     }
 
@@ -76,7 +71,8 @@ public class Boss : MonoBehaviour
 
         if (colInfo != null)
         {
-            colInfo.GetComponent<HeroKnight>().ReceiveDamage(attackDamage);
+            Debug.Log("Boss Hit Player!!");
+            colInfo.GetComponent<CombatCharacter>().takeDamage(new AttackProp(attackDamage));
         }
     }
 
@@ -93,7 +89,7 @@ public class Boss : MonoBehaviour
         Gizmos.DrawWireSphere(pos, attackRange);
     }
 
-    void reduceTenacity(int value) {
+    void reduceTenacity(float value) {
         tenacity -= value;
         Debug.Log("reduceTenacity" + value + "tenacity" + tenacity);
     }
@@ -103,11 +99,11 @@ public class Boss : MonoBehaviour
         if ( !armorBroken && tenacity <= 0 ) {
             armorBroken = true;
             // TODO: play broken sound
-        } else if ( armorBroken && !secondBreak && (currentHealth <= (int)(maxHealth / 3))) {
+        } else if ( armorBroken && !secondBreak && (health.currentHP <= (int)(health.maxHP / 3))) {
             armorBroken = false;
             tenacity = 1200;
             secondBreak = true;
-        } else if ( armorBroken && !firstBreak && (currentHealth <= (int)(maxHealth / 3 * 2))) {
+        } else if ( armorBroken && !firstBreak && (health.currentHP <= (int)(health.maxHP / 3 * 2))) {
             armorBroken = false;
             tenacity = 1100;
             firstBreak = true;

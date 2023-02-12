@@ -3,7 +3,7 @@ using System.Collections;
 // using System.Math;
 using System;
 
-public class HeroKnight : MonoBehaviour {
+public class HeroKnight : CombatCharacter {
 
     [SerializeField] public KeyCode m_key_attack = KeyCode.L;
     [SerializeField] public KeyCode m_key_block = KeyCode.LeftBracket;
@@ -31,13 +31,6 @@ public class HeroKnight : MonoBehaviour {
     public LayerMask enemyLayers;
     public bool isExactBlock = false;
     
-
-    // health system
-    public int maxHealth = 100;
-    public int currentHealth = 100;
-    public HealthBar healthBar;
-    public EnergyBar energyBar;
-
     // music energy system
     public float musicEnergy = 0;
     public float energyIncrement = 20.0f;
@@ -80,7 +73,7 @@ public class HeroKnight : MonoBehaviour {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
-
+        health.dieCB = PlayerDie;
 
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<Sensor_HeroKnight>();
@@ -88,8 +81,6 @@ public class HeroKnight : MonoBehaviour {
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
 
-        currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
         energyBar.SetMaxEnergy(maxMusicEnergy);
         energyBar.SetEnergy(musicEnergy);
         exactBlockTime = 0;
@@ -190,7 +181,7 @@ public class HeroKnight : MonoBehaviour {
         //Hurt
         else if (Input.GetKeyDown("q") && !m_rolling) {
             m_animator.SetTrigger("Hurt");
-            // ReceiveDamage(1);
+            health.changeHP(-1);
         }
             
         //Attack
@@ -214,7 +205,7 @@ public class HeroKnight : MonoBehaviour {
 
             foreach(Collider2D enemy in hitEnemies) {
                 Debug.Log("Hit " + enemy.name);
-                enemy.GetComponentInChildren<Boss>().TakeDamage(attackDamage);
+                enemy.GetComponent<CombatCharacter>().takeDamage(new AttackProp(attackDamage));
             }
 
             // Reset timer
@@ -383,15 +374,6 @@ public class HeroKnight : MonoBehaviour {
             isExactBlock = false;
         }
     } 
-
-    // Get hurt
-    public void ReceiveDamage(int damage) {
-        currentHealth -= (damage - blockDamage);
-        healthBar.SetHealth(currentHealth);
-        if (currentHealth <= 0 ) {
-            PlayerDie();    
-        }
-    }
 
     // Death
     void PlayerDie() {

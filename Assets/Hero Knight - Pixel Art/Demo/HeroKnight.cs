@@ -236,8 +236,8 @@ public class HeroKnight : CombatCharacter {
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
             foreach(Collider2D enemy in hitEnemies) {
-                Debug.Log("Hit " + enemy.name);
-                enemy.GetComponent<CombatCharacter>().takeDamage(attProp);
+                Debug.Log("Hit " + enemy.name + " with prop " + attProp);
+                enemy.GetComponentInChildren<CombatCharacter>().takeDamage(attProp);
             }
 
             // Reset timer

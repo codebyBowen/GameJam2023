@@ -8,6 +8,7 @@ public static class Damage {
   static Damage() {
     foreach(Phase p in Enum.GetValues(typeof(Phase))) {
       phaseMultiplyer[(int)Phase.none,(int)p] = phaseMultiplyer[(int)p,(int)p] = 1.0F;
+      phaseMultiplyer[(int)p,(int)Phase.none] = 1.3F;
     }
 
     // Overcoming + Generating

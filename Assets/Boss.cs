@@ -50,7 +50,7 @@ public class Boss : CombatCharacter
 
         animator.SetBool("IsDead", true);
 
-        GetComponent<Collider2D>().enabled = false;
+        GetComponentInParent<Collider2D>().enabled = false;
 
         this.enabled = false;
     }

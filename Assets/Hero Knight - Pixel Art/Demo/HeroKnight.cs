@@ -61,7 +61,7 @@ public class HeroKnight : CombatCharacter {
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
-    private float               m_rollDuration = 1.0f;
+    private float               m_rollDuration = 0.8f;
     private float               m_rollCurrentTime;
     private float               timer = 0.0f;
     private float               blockDuration = 0.5f;
@@ -70,6 +70,8 @@ public class HeroKnight : CombatCharacter {
     [SerializeField] int        blockDamage = 0;
     public GameObject           goodSignal;
     public GameObject           badSignal;
+    public EnergyBar            energyBar;
+    public GameObject           DialogueSystem;
 
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
@@ -96,6 +98,7 @@ public class HeroKnight : CombatCharacter {
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
+        DialogueSystem = GameObject.FindGameObjectWithTag("dialogue");
 
         energyBar.SetMaxEnergy(maxMusicEnergy);
         energyBar.SetEnergy(musicEnergy);
@@ -445,6 +448,7 @@ public class HeroKnight : CombatCharacter {
         m_animator.SetBool("noBlood", m_noBlood);
         m_animator.SetTrigger("Death");
         m_animator.SetBool("IsDead", true);
+        DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(3);
         this.enabled = false;
     }
 }

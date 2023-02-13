@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class BossSpell : MonoBehaviour
 {
-    public int attackDamage = 20;
     public Vector3 attackOffset;
     public float attackRange = 1f;
     public LayerMask attackMask;
+
+    private AttackProp attProp = new AttackProp(Phase.none, 20, DamageType.Magic);
 
     void Start() {
         Destroy(gameObject, 4f);
@@ -25,7 +26,7 @@ public class BossSpell : MonoBehaviour
 
         if (colInfo != null)
         {
-            colInfo.GetComponent<Health>().changeHP(-attackDamage);
+            colInfo.GetComponentInParent<CombatCharacter>().takeDamage(attProp);
         }
     }
 

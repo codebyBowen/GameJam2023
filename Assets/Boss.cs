@@ -69,7 +69,7 @@ public class Boss : CombatCharacter
         if (colInfo != null)
         {
             Debug.Log("Boss Hit Player!!");
-            colInfo.GetComponent<CombatCharacter>().takeDamage(attProp);
+            colInfo.GetComponentInParent<CombatCharacter>().takeDamage(attProp);
         }
     }
 

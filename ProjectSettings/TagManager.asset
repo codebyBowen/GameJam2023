@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - signal
+  - dialogue
   layers:
   - Default
   - TransparentFX

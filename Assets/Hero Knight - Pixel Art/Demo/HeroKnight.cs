@@ -66,12 +66,14 @@ public class HeroKnight : CombatCharacter {
     private float               timer = 0.0f;
     private float               blockDuration = 0.5f;
     private float               exactBlockDuration = 0.2f;
+    private bool                ultTutorialFristPlayed = false;
+    private bool                ultTutorialSecondPlayed = false;
+    private bool                rebornTutorialPlayed = false;
     public float                exactBlockTime; 
     [SerializeField] int        blockDamage = 0;
     public GameObject           goodSignal;
     public GameObject           badSignal;
     // public EnergyBar            energyBar;
-
     public GameObject           DialogueSystem;
 
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
@@ -145,6 +147,7 @@ public class HeroKnight : CombatCharacter {
     {
         ShowOnRhythm();
         musicEnergyCalculation();
+        LowHealthTutorial();
         if (exactBlockTime > 0) {
             DamageBlockCalculation();
         }
@@ -380,6 +383,15 @@ public class HeroKnight : CombatCharacter {
                 elapsedTime = 0;
             } else {
                 setMusicEnergy(maxMusicEnergy);
+                if (!ultTutorialFristPlayed ) {
+                    ultTutorialFristPlayed = true;
+                    DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(2);
+                } 
+                // Will display chaos text
+                // else if ( !ultTutorialSecondPlayed ) {
+                //     DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(3);
+                //     ultTutorialSecondPlayed = true;
+                // }
             }
         }
     }
@@ -442,6 +454,13 @@ public class HeroKnight : CombatCharacter {
         }
     } 
 
+    void LowHealthTutorial() {
+        if (health.currentHP < health.maxHP / 2 && !rebornTutorialPlayed) {
+            DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(5);
+            rebornTutorialPlayed = true;
+        }
+    }
+
     // Death
     void PlayerDie() {
         if (m_animator.GetBool("IsDead")) {
@@ -450,7 +469,7 @@ public class HeroKnight : CombatCharacter {
         m_animator.SetBool("noBlood", m_noBlood);
         m_animator.SetTrigger("Death");
         m_animator.SetBool("IsDead", true);
-        DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(3);
+        DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(4);
         this.enabled = false;
     }
 }

@@ -18,12 +18,6 @@ public class DialogueSystem : MonoBehaviour
         Background.SetActive(false);
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-        
-    // }
-
     IEnumerator Type() 
     {
         foreach(char letter in sentenses[index].ToCharArray())
@@ -37,11 +31,13 @@ public class DialogueSystem : MonoBehaviour
     {
         // trigger specific dialogue when event happens
         // index 0 is empty string
-        Debug.Log("TriggerDisplayDialog" + dialogueIndex + sentenses.Length);
+        textDisplay.text = "";
+        Debug.Log("TriggerDisplayDialog" + sentenses[dialogueIndex]);
         if (dialogueIndex <= sentenses.Length - 1)
         {
             index = dialogueIndex;
             Background.SetActive(true);
+            StartCoroutine(Type());
         } else {
             Background.SetActive(false);
             index = 0;

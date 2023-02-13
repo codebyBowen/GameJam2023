@@ -19,7 +19,7 @@ public class ComposerScript : MonoBehaviour
     public int numOctaves;
     public bool isChordMode = true;
     public bool isChordProgressionMode = true;
-    public bool randomTimeMode = true;
+    public bool randomTimeMode = false;
     public float minDelay = 1.5F;
     public float maxDelay = 10;
     public bool fileLoadStats = false;

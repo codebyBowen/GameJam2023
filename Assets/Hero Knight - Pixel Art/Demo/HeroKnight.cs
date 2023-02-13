@@ -71,6 +71,7 @@ public class HeroKnight : CombatCharacter {
     public GameObject           goodSignal;
     public GameObject           badSignal;
     public EnergyBar            energyBar;
+    // public EnergyBar            energyBar;
     public GameObject           DialogueSystem;
 
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };

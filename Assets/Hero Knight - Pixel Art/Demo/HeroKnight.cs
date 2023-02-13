@@ -39,7 +39,7 @@ public class HeroKnight : CombatCharacter {
     private ColorSwap_HeroKnight colorSwap;
     
     // music energy system
-    public EnergyBar energyBar
+    public EnergyBar energyBar;
     public float musicEnergy = 0;
     public float energyIncrement = 20.0f;
     public float maxMusicEnergy = 100.0f;
@@ -70,7 +70,6 @@ public class HeroKnight : CombatCharacter {
     [SerializeField] int        blockDamage = 0;
     public GameObject           goodSignal;
     public GameObject           badSignal;
-    public EnergyBar            energyBar;
     // public EnergyBar            energyBar;
     public GameObject           DialogueSystem;
 
@@ -117,6 +116,7 @@ public class HeroKnight : CombatCharacter {
     }
 
     void onPhaseChange(Phase __oldP, Phase newP) {
+      Debug.Log("phase chagned to "+ newP + ", (int):" + (int)newP);
       colorSwap.ClearAllSpritesColors();
       if(newP != Phase.none) {
         colorSwap.SwapColors(phaseColors[(int)newP]);

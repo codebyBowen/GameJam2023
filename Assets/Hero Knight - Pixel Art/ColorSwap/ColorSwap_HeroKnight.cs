@@ -6,7 +6,7 @@ public class ColorSwap_HeroKnight : MonoBehaviour
 {
     // Accessable in Editor
     [SerializeField] Color[] m_sourceColors;
-    [SerializeField] Color[] m_newColors;
+    //[SerializeField] Color[] m_newColors;
 
     // Private member variables
     Texture2D m_colorSwapTex;
@@ -19,29 +19,17 @@ public class ColorSwap_HeroKnight : MonoBehaviour
     {
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         InitColorSwapTex();
-        
-        SwapDemoColors();
     }
 
-    // OnValidate is called every time m_sourceColors or m_newColors is changed in editor. 
-    // Only possible to change colors in real time when in play mode.
-    private void OnValidate()
-    {
-        if (m_init)
-        {
-            SwapDemoColors();
-        }
-    }
 
     // Uses the value from the red channel in the source color (0-255) as an index for where to place the new color into the swap texture (256x1 px)
-    public void SwapDemoColors()
+    public void SwapColors(Color[] newColors)
     {
-        for(int i = 0; i < m_sourceColors.Length && i < m_newColors.Length; i++)
+        for(int i = 0; i < m_sourceColors.Length && i < newColors.Length; i++)
         {
-            SwapColor((int)(m_sourceColors[i].r * 255.0f), m_newColors[i]);
+            SwapColor((int)(m_sourceColors[i].r * 255.0f), newColors[i]);
         }
-        if(m_colorSwapTex)
-            m_colorSwapTex.Apply();
+        m_colorSwapTex.Apply();
     }
 
     public static Color ColorFromInt(int c, float alpha = 1.0f)

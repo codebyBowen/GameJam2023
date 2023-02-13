@@ -6,7 +6,6 @@ public class Boss : CombatCharacter
 {
     public Animator animator;
 
-    public int attackDamage = 20;
     public Vector3 attackOffset;
     public float attackRange = 1f;
     public LayerMask attackMask;
@@ -27,13 +26,11 @@ public class Boss : CombatCharacter
         armorBroken = false;
         firstBreak = false;
         secondBreak = false;
+
+        health.dieCB = Die;
     }
 
     void FixedUpdate() {
-        // FIXME: weird bug when put in Start and sometimes, health is null
-        if(health != null) {  
-          health.dieCB = Die;
-        }
         tenacitySystem();
     }
 
@@ -53,7 +50,7 @@ public class Boss : CombatCharacter
 
         animator.SetBool("IsDead", true);
 
-        GetComponent<Collider2D>().enabled = false;
+        GetComponentInParent<Collider2D>().enabled = false;
 
         this.enabled = false;
     }
@@ -72,7 +69,7 @@ public class Boss : CombatCharacter
         if (colInfo != null)
         {
             Debug.Log("Boss Hit Player!!");
-            colInfo.GetComponent<CombatCharacter>().takeDamage(new AttackProp(attackDamage));
+            colInfo.GetComponent<CombatCharacter>().takeDamage(attProp);
         }
     }
 

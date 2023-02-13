@@ -1,8 +1,6 @@
-public enum Phase {
+public enum Phase : int {
   none,
-  Metal,
   Wood,
   Water,
-  Fire,
-  Earth
+  Fire
 }

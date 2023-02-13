@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
-// using System.Math;
 using System;
 
 public class HeroKnight : CombatCharacter {
 
     [SerializeField] public KeyCode m_key_attack = KeyCode.L;
-    [SerializeField] public KeyCode m_key_block = KeyCode.LeftBracket;
+    [SerializeField] public KeyCode m_key_block = KeyCode.P;
+    [SerializeField] public KeyCode m_key_changePhase = KeyCode.Y;
 
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
@@ -21,15 +21,22 @@ public class HeroKnight : CombatCharacter {
     // [SerializeField] float      m_coefficient = 0.0f;
     // [SerializeField] float      m_acceleration = 0.0f;
     [SerializeField] float      m_slip_time = 1.0f;
-    public float elapsedTime = 0f;
+
+    [SerializeField] Color[] fireColor;
+    [SerializeField] Color[] waterColor;
+    [SerializeField] Color[] woodColor;
+
+    Color[][] phaseColors = new Color[Enum.GetNames(typeof(Phase)).Length][];
+
+    private float elapsedTime = 0f;
     public bool onRhythm = false; 
 
     public float attackRange = 0.5f;
-    public int attackDamage = 40;
     public float attackRate = 2;
     public Transform attackPoint;
     public LayerMask enemyLayers;
     public bool isExactBlock = false;
+    private ColorSwap_HeroKnight colorSwap;
     
     // music energy system
     public EnergyBar energyBar
@@ -71,10 +78,18 @@ public class HeroKnight : CombatCharacter {
     // Use this for initialization
     void Start ()
     {
+
+        phaseColors[(int)Phase.Wood] = woodColor;
+        phaseColors[(int)Phase.Fire] = fireColor;
+        phaseColors[(int)Phase.Water] = waterColor;
+
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
+        colorSwap = GetComponent<ColorSwap_HeroKnight>();
+
         health.dieCB = PlayerDie;
+        attProp.onPhaseChange = onPhaseChange;
 
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<Sensor_HeroKnight>();
@@ -87,6 +102,37 @@ public class HeroKnight : CombatCharacter {
         exactBlockTime = 0;
         blockDamage = 0;
         isExactBlock = false;
+        onPhaseChange(Phase.none, attProp.phase);
+    }
+
+    public void OnValidate() {
+      if(colorSwap != null) {
+        colorSwap.InitColorSwapTex();
+        onPhaseChange(Phase.none, attProp.phase);
+      }
+    }
+
+    void onPhaseChange(Phase __oldP, Phase newP) {
+      colorSwap.ClearAllSpritesColors();
+      if(newP != Phase.none) {
+        colorSwap.SwapColors(phaseColors[(int)newP]);
+        switch(newP) {
+          case Phase.Fire: {
+            Burn.attach(gameObject, 2.0F, 10.0F);
+            break;
+          }
+        }
+      }
+    }
+
+    public void takeDamage(AttackProp ap) {
+      float damage = Damage.calPhaseAddedDamage(ap, attProp);
+      if(ap.damageType == DamageType.Physical) {
+        damage -= blockDamage;
+      }
+      float finalDamage = Math.Max(0, damage);
+
+      health.changeHP(-finalDamage);
     }
 
     // Update is called once per frame
@@ -207,8 +253,8 @@ public class HeroKnight : CombatCharacter {
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
             foreach(Collider2D enemy in hitEnemies) {
-                Debug.Log("Hit " + enemy.name);
-                enemy.GetComponent<CombatCharacter>().takeDamage(new AttackProp(attackDamage));
+                Debug.Log("Hit " + enemy.name + " with prop " + attProp);
+                enemy.GetComponentInChildren<CombatCharacter>().takeDamage(attProp);
             }
 
             // Reset timer
@@ -249,6 +295,14 @@ public class HeroKnight : CombatCharacter {
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity += new Vector2(0, m_jumpForce);
             m_groundSensor.Disable(0.2f);
+        }
+
+        // Change Phase
+        else if (Input.GetKeyDown(m_key_changePhase) && musicEnergy == maxMusicEnergy) {
+          // TODO: allow player to choose what phase to change to?
+          var vals = Enum.GetValues(typeof(Phase));
+          attProp.setPhase((Phase)vals.GetValue(UnityEngine.Random.Range(0, vals.Length)));
+          setMusicEnergy(0);
         }
 
         //Run
@@ -301,22 +355,26 @@ public class HeroKnight : CombatCharacter {
 
     int isHitOnRhythm = -1;
 
+    void setMusicEnergy(float newEnergy) {
+      musicEnergy = newEnergy;
+      energyBar.SetEnergy(musicEnergy);
+    }
+
     void musicEnergyCalculation() {
         if ( musicEnergy <= 0) {
-            musicEnergy = 0;
+            setMusicEnergy(0);
             return;
         } else if( musicEnergy < maxMusicEnergy && musicEnergy >= 0) {
             // decrease 5% of max energy per second
-            musicEnergy -= maxMusicEnergy * 0.05f * Time.fixedDeltaTime;
-            energyBar.SetEnergy(musicEnergy);
+            setMusicEnergy(musicEnergy - maxMusicEnergy * 0.05f * Time.fixedDeltaTime);
         } else {
             elapsedTime += Time.fixedDeltaTime;         
             // keep max energy for 2 seconds
             if (elapsedTime >= 2.0f) {
-                musicEnergy = 99.9f;
+                setMusicEnergy(99.9f);
                 elapsedTime = 0;
             } else {
-                musicEnergy = 100.0f;
+                setMusicEnergy(maxMusicEnergy);
             }
         }
     }
@@ -327,8 +385,7 @@ public class HeroKnight : CombatCharacter {
             if (isHitOnRhythm < 0) {
                 if (onRhythm) {
                     isHitOnRhythm = 1;
-                    musicEnergy += energyIncrement;
-                    energyBar.SetEnergy(musicEnergy);
+                    setMusicEnergy(musicEnergy + energyIncrement);
                 } else {
                     isHitOnRhythm = 0;
                     // musicEnergy -= energyIncrement / 2;
@@ -350,9 +407,9 @@ public class HeroKnight : CombatCharacter {
     void OnRhythmAttack() {
         Debug.Log("onRhythm" + onRhythm);
         if (onRhythm) {
-            attackDamage = 60;
+            attProp.baseDamage = 60;
         } else {
-            attackDamage = 20;
+            attProp.baseDamage = 20;
         }
     }
 

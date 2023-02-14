@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c55a9d0a3c8b964e92b449ff09786c5, type: 3}
+  m_Name: PlusMusicSettingsSo
+  m_EditorClassIdentifier: 
+  _projectId: 1524
+  _apiKey: $2y$13$kLBFZOfEScdpvnwFwRjQj.mDqBgWtkwK9PP1rbvbwAFeu2kCwrO6O
+  _musicVolume: 1
+  _autoLoadProject: 1
+  _autoPlayProject: 1
+  _debugMode: 0
+  _logServerResponses: 0
+  jsonPackage: {fileID: 4900000, guid: 4cc34a5c27056d44295b946ddad73494, type: 3}
+  packageData:
+    name: ai.plusmusic
+    version: 0.9.16
+    displayName: PlusMusic Audio Plugin
+    description: This is the PlusMusic Audio Plugin Package
+    unity: 2019.1
+    unityRelease: 0b5
+    documentationUrl: https://www.plusmusic.ai/
+    changelogUrl: https://www.plusmusic.ai/
+    licensesUrl: https://www.plusmusic.ai/
+    dependencies: []
+    keywords:
+    - music
+    - dj
+    - dynamic
+    author:
+      name: PlusMusic
+      email: unity@plusmusic.ai
+      url: https://www.plusmusic.ai/

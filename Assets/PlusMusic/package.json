@@ -1,0 +1,23 @@
+{
+  "name": "ai.plusmusic",
+  "version": "0.9.16",
+  "displayName": "PlusMusic Audio Plugin",
+  "description": "This is the PlusMusic Audio Plugin Package",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://www.plusmusic.ai/",
+  "changelogUrl": "https://www.plusmusic.ai/",
+  "licensesUrl": "https://www.plusmusic.ai/",
+  "dependencies": {
+ },
+ "keywords": [
+    "music",
+    "dj",
+    "dynamic"
+  ],
+  "author": {
+    "name": "PlusMusic",
+    "email": "unity@plusmusic.ai",
+    "url": "https://www.plusmusic.ai/"
+  }
+}

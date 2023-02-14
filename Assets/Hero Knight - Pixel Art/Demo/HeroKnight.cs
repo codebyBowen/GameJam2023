@@ -18,7 +18,7 @@ public class HeroKnight : CombatCharacter {
     [SerializeField] bool       m_associative_agnosia = false;
     [SerializeField] bool       m_ice_skater = false;
     [SerializeField] bool       m_limb_length_discrepancy = false;
-    // [SerializeField] float      m_coefficient = 0.0f;
+    [SerializeField] float      m_coefficient = 0;
     // [SerializeField] float      m_acceleration = 0.0f;
     [SerializeField] float      m_slip_time = 1.0f;
 
@@ -56,6 +56,7 @@ public class HeroKnight : CombatCharacter {
     private bool                m_isWallSliding = false;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
+    private bool                m_getSideEffect = false;
     private int                 m_facingDirection = 1;
     private int                 prev_facingDirection = 1;
     private int                 m_currentAttack = 0;
@@ -79,11 +80,14 @@ public class HeroKnight : CombatCharacter {
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
 
+    // private string[] sideEffects = new string[] {
+    //     "ice_skater", ""
+    // }
+
 
     // Use this for initialization
     void Start ()
     {
-
         phaseColors[(int)Phase.Wood] = woodColor;
         phaseColors[(int)Phase.Fire] = fireColor;
         phaseColors[(int)Phase.Water] = waterColor;
@@ -107,6 +111,8 @@ public class HeroKnight : CombatCharacter {
         energyBar.SetEnergy(musicEnergy);
         exactBlockTime = 0;
         blockDamage = 0;
+        m_coefficient = 0;
+        m_ice_skater = false;
         isExactBlock = false;
         onPhaseChange(Phase.none, attProp.phase);
     }
@@ -147,7 +153,7 @@ public class HeroKnight : CombatCharacter {
     {
         ShowOnRhythm();
         musicEnergyCalculation();
-        LowHealthTutorial();
+        // LowHealthTutorial();
         if (exactBlockTime > 0) {
             DamageBlockCalculation();
         }
@@ -212,13 +218,15 @@ public class HeroKnight : CombatCharacter {
         }
 
         // Move
-        if (!m_rolling )
+        if (!m_rolling ) 
+        {
             m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
-            // During ice_skater status
-            if (m_ice_skater && Math.Abs(inputX) < 1e-6 && timer <= m_slip_time && Math.Abs(m_body2d.velocity.y) < 1e-6) {
-              timer += Time.deltaTime;
-              m_body2d.velocity = new Vector2(m_speed * m_facingDirection * (m_slip_time - timer), m_body2d.velocity.y); 
+
+            if ( Math.Abs(inputX) < 1e-6 && timer <= m_slip_time && Math.Abs(m_body2d.velocity.y) < 1e-6) {
+                timer += Time.deltaTime;
+                m_body2d.velocity = new Vector2(m_speed * m_coefficient * m_facingDirection * (m_slip_time - timer), m_body2d.velocity.y); 
             }
+        }
 
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeedY", m_body2d.velocity.y);
@@ -228,21 +236,21 @@ public class HeroKnight : CombatCharacter {
         m_isWallSliding = (m_wallSensorR1.State() && m_wallSensorR2.State()) || (m_wallSensorL1.State() && m_wallSensorL2.State());
         m_animator.SetBool("WallSlide", m_isWallSliding);
 
-        //Death
-        if (Input.GetKeyDown("e") && !m_rolling)
-        {
-            m_animator.SetBool("noBlood", m_noBlood);
-            m_animator.SetTrigger("Death");
-        }
+        // //Death
+        // if (Input.GetKeyDown("e") && !m_rolling)
+        // {
+        //     m_animator.SetBool("noBlood", m_noBlood);
+        //     m_animator.SetTrigger("Death");
+        // }
             
         //Hurt
-        else if (Input.GetKeyDown("q") && !m_rolling) {
-            m_animator.SetTrigger("Hurt");
-            health.changeHP(-1);
-        }
+        // else if (Input.GetKeyDown("q") && !m_rolling) {
+        //     m_animator.SetTrigger("Hurt");
+        //     health.changeHP(-1);
+        // }
             
         //Attack
-        else if(Input.GetKeyDown(m_key_attack) && m_timeSinceAttack > 0.25f && !m_rolling)
+        if(Input.GetKeyDown(m_key_attack) && m_timeSinceAttack > 0.25f && !m_rolling)
         {
             OnRhythmAttack();
             m_currentAttack++;
@@ -311,6 +319,10 @@ public class HeroKnight : CombatCharacter {
           var vals = Enum.GetValues(typeof(Phase));
           attProp.setPhase((Phase)vals.GetValue(UnityEngine.Random.Range(0, vals.Length)));
           setMusicEnergy(0);
+          // recover full health
+          health.changeHP(health.maxHP - health.currentHP);
+          //TODO: add side effects
+          m_ice_skater = true;
         }
 
         //Run
@@ -331,6 +343,11 @@ public class HeroKnight : CombatCharacter {
         }
 
         prev_facingDirection = m_facingDirection;
+
+        // sideEffect ice skater
+        if (m_ice_skater) {
+            BecomeIceSkater();
+        } 
     }
 
     // Animation Events
@@ -376,23 +393,24 @@ public class HeroKnight : CombatCharacter {
             // decrease 5% of max energy per second
             setMusicEnergy(musicEnergy - maxMusicEnergy * 0.05f * Time.fixedDeltaTime);
         } else {
-            elapsedTime += Time.fixedDeltaTime;         
+            // elapsedTime += Time.fixedDeltaTime;         
             // keep max energy for 2 seconds
-            if (elapsedTime >= 2.0f) {
-                setMusicEnergy(99.9f);
-                elapsedTime = 0;
-            } else {
-                setMusicEnergy(maxMusicEnergy);
-                if (!ultTutorialFristPlayed ) {
-                    ultTutorialFristPlayed = true;
-                    DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(2);
-                } 
+            // if (elapsedTime >= 2.0f) {
+            //     setMusicEnergy(99.9f);
+            //     elapsedTime = 0;
+            // } 
+
+            setMusicEnergy(maxMusicEnergy);
+            if (!ultTutorialFristPlayed ) {
+                ultTutorialFristPlayed = true;
+                DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(5);
+            } 
                 // Will display chaos text
                 // else if ( !ultTutorialSecondPlayed ) {
                 //     DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(3);
                 //     ultTutorialSecondPlayed = true;
                 // }
-            }
+            
         }
     }
 
@@ -454,11 +472,16 @@ public class HeroKnight : CombatCharacter {
         }
     } 
 
-    void LowHealthTutorial() {
-        if (health.currentHP < health.maxHP / 2 && !rebornTutorialPlayed) {
-            DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(5);
-            rebornTutorialPlayed = true;
-        }
+    // void LowHealthTutorial() {
+    //     if (health.currentHP < health.maxHP / 2 && !rebornTutorialPlayed) {
+    //         // DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(5);
+    //         rebornTutorialPlayed = true;
+    //     }
+    // }
+
+    void BecomeIceSkater() {
+        m_coefficient += 0.2f;
+        m_ice_skater = false;
     }
 
     // Death

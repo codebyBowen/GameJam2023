@@ -1,15 +1,16 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class AttackProp : MonoBehaviour {
   public Phase phase;
-  public float baseDamage;
+  public ModableValue<float> damage;
   public DamageType damageType;
   public Action<Phase,Phase>? onPhaseChange;
 
   public AttackProp(Phase phase, float baseDamage, DamageType damageType = DamageType.Absolute, Action<Phase,Phase>? onPhaseChange = null) {
     this.phase = phase;
-    this.baseDamage = baseDamage;
+    this.damage = new ModableValue<float>(baseDamage);
     this.damageType = damageType;
     this.onPhaseChange = onPhaseChange;
   }
@@ -26,7 +27,9 @@ public class AttackProp : MonoBehaviour {
   }
 
   public AttackProp Clone() {
-    return (AttackProp)this.MemberwiseClone();
+    AttackProp obj = (AttackProp)this.MemberwiseClone();
+    obj.damage = this.damage.Clone();
+    return obj;
   }
 
 }

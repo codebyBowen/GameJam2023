@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public static class Damage {
@@ -24,8 +25,8 @@ public static class Damage {
     }
   }
 
-  static public float calPhaseAddedDamage(AttackProp attacker, AttackProp victim) {
-    return attacker.baseDamage * phaseMultiplyer[(int)attacker.phase,(int)victim.phase];
+  static public float CalculateDamage(AttackProp attacker, AttackProp victim) {
+    return attacker.damage.Get() * phaseMultiplyer[(int)attacker.phase,(int)victim.phase];
   }
 }
 

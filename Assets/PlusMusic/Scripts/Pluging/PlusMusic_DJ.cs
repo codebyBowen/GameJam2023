@@ -814,10 +814,10 @@ public class PlusMusic_DJ : MonoBehaviour
             if (parentData.parent_id != null)
             {
                 theSoundtrackOptions = SoundtrackOptionsForMenu();
-                OnSoundTrackOptionsReceived?.Invoke(TheSoundtrackOptions);
                 if (TheSoundtrackOptions != null && TheSoundtrackOptions.Length > 0) { 
                     SelectRemoteSoundtrackByID(TheSoundtrackOptions[0].id); 
                 }
+                OnSoundTrackOptionsReceived?.Invoke(TheSoundtrackOptions);
                 RealTimeDebug?.Invoke("Successfully setup soundtrack options");
                 DisplaySoundtrackOptions();
                 //webRequest.Dispose();

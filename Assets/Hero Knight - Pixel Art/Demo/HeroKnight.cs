@@ -30,6 +30,7 @@ public class HeroKnight : CombatCharacter {
 
     private float elapsedTime = 0f;
     public bool onRhythm = false; 
+    public ComposerScript composer;
 
     public float attackRange = 0.5f;
     public float attackRate = 2;
@@ -151,6 +152,8 @@ public class HeroKnight : CombatCharacter {
     // Update is called once per frame
     void FixedUpdate ()
     {
+        onRhythm = composer.isOnRhythm();
+
         ShowOnRhythm();
         musicEnergyCalculation();
         // LowHealthTutorial();

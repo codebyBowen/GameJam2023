@@ -160,7 +160,7 @@ public class HeroKnight : CombatCharacter {
     {
         onRhythm = composer.isOnRhythm();
 
-        DebuffDisplay.text = "ice skater level " + (m_coefficient * 5.0f).ToString();
+        // DebuffDisplay.text = "ice skater level " + (m_coefficient * 5.0f).ToString();
         ShowOnRhythm();
         musicEnergyCalculation();
         // LowHealthTutorial();

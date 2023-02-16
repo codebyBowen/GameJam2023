@@ -9,7 +9,7 @@ public class PenguinMove : StateMachineBehaviour
     Penguin penguin;
 
     public float speed = 2.5f;
-    public float attackRange = 4f;
+    public float attackRange = 2f;
 
     public float castCoolOff = 4.0f;
     public float firstCastAt = 1.0f;
@@ -17,6 +17,8 @@ public class PenguinMove : StateMachineBehaviour
     float nextTime = 0;
     public int castProbabilityPercentage = 50;
     float timeSinceCast = 0;
+
+    public bool shouldMoveToPlayer = false;
 
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -42,8 +44,12 @@ public class PenguinMove : StateMachineBehaviour
         //     animator.SetBool("Slide", true);
         // }
 
-        Vector2 target = new Vector2(player.position.x, rb.position.y);
-        Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
+
+        if (shouldMoveToPlayer) {
+            Vector2 target = new Vector2(player.position.x, rb.position.y);
+            Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
+            rb.MovePosition(newPos);
+        }
 
 
         if (Vector2.Distance(player.position, rb.position) <= attackRange) {
@@ -52,13 +58,19 @@ public class PenguinMove : StateMachineBehaviour
             // Check every interval, not checking every frame 
             if (Time.time >= nextTime) {
                 if (Random.Range(0, 100) < castProbabilityPercentage && timeSinceCast > castCoolOff ) { 
+                    bool atLeftOfPlayer = animator.transform.position.x < player.position.x;
+                    var randomOffset = Random.Range(1f, 10f);
+                    var playerX = player.position.x;
+
+                    // Slide beyond the player, not just stop right at the position
+                    animator.SetFloat("MoveToX", atLeftOfPlayer ? playerX + randomOffset : playerX - randomOffset);
                     animator.SetTrigger("Slide");
+                    animator.SetBool("IsSliding", true);
                 } else if (Random.Range(0, 100) > castProbabilityPercentage) {
                     animator.SetBool("Jump", true);
                 }
                 nextTime += interval;
             }
-            rb.MovePosition(newPos);
         }
     }
 

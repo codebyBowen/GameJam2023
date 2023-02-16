@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using TMPro;
 
 public class HeroKnight : CombatCharacter {
 
@@ -77,6 +78,7 @@ public class HeroKnight : CombatCharacter {
     public GameObject           badSignal;
     // public EnergyBar            energyBar;
     public GameObject           DialogueSystem;
+    public TMP_Text             DebuffDisplay;
 
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
@@ -154,6 +156,7 @@ public class HeroKnight : CombatCharacter {
     {
         onRhythm = composer.isOnRhythm();
 
+        DebuffDisplay.text = "ice skater level " + (m_coefficient * 5.0f).ToString();
         ShowOnRhythm();
         musicEnergyCalculation();
         // LowHealthTutorial();

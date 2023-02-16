@@ -37,10 +37,10 @@ public class Boss : CombatCharacter
     public void takeDamage(AttackProp ap) {
         // take damage only when armor is broken
         // currentHealth -= damage;
-        reduceTenacity(ap.baseDamage);
+        reduceTenacity(Damage.CalculateDamage(ap, this.attProp));
         if (armorBroken) {
             animator.SetTrigger("Hurt");
-            health.changeHP(-ap.baseDamage);
+            base.takeDamage(ap);
         }
     }
 

@@ -5,6 +5,6 @@ public class CombatCharacter : MonoBehaviour {
   public AttackProp attProp;
 
   public void takeDamage(AttackProp ap) {
-    health.changeHP(-Damage.calPhaseAddedDamage(ap, attProp));
+    health.changeHP(-Damage.CalculateDamage(ap, attProp));
   }
 }

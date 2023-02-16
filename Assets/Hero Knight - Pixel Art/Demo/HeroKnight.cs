@@ -137,12 +137,16 @@ public class HeroKnight : CombatCharacter {
             Burn.attach(gameObject, 2.0F, 10.0F);
             break;
           }
+          case Phase.Water: {
+            ReduceAttackDamage.attach(gameObject, 0.6F, 10.0F);
+            break;
+          }
         }
       }
     }
 
     public void takeDamage(AttackProp ap) {
-      float damage = Damage.calPhaseAddedDamage(ap, attProp);
+      float damage = Damage.CalculateDamage(ap, attProp);
       if(ap.damageType == DamageType.Physical) {
         damage -= blockDamage;
       }
@@ -448,9 +452,9 @@ public class HeroKnight : CombatCharacter {
     void OnRhythmAttack() {
         Debug.Log("onRhythm" + onRhythm);
         if (onRhythm) {
-            attProp.baseDamage = 60;
+            attProp.damage.InitVal = 60;
         } else {
-            attProp.baseDamage = 20;
+            attProp.damage.InitVal = 20;
         }
     }
 

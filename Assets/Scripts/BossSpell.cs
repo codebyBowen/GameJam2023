@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AttackProp))]
 public class BossSpell : MonoBehaviour
 {
     public Vector3 attackOffset;
     public float attackRange = 1f;
     public LayerMask attackMask;
 
-    private AttackProp attProp = new AttackProp(Phase.none, 20, DamageType.Magic);
+    public AttackProp attProp;
 
     void Start() {
         Destroy(gameObject, 4f);

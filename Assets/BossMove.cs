@@ -8,7 +8,8 @@ public class BossMove : StateMachineBehaviour
     Rigidbody2D rb;
     BringerOfDeath boss;
 
-    public float speed = 2.5f;
+    public float speed = 0.5f;
+    public float attackRange = 4f;
 
     public float castCoolOff = 4.0f;
     public float firstCastAt = 1.0f;
@@ -20,6 +21,7 @@ public class BossMove : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+       speed = 0.5f;
        player = GameObject.FindGameObjectWithTag("Player").transform;
 
        rb = animator.transform.parent.GetComponent<Rigidbody2D>();
@@ -27,6 +29,7 @@ public class BossMove : StateMachineBehaviour
        boss = animator.transform.parent.GetComponent<BringerOfDeath>();
 
        timeSinceCast = 0;
+       
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -44,19 +47,24 @@ public class BossMove : StateMachineBehaviour
         Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
 
 
-        // Check every interval, not checking every frame 
-        if (Time.time >= nextTime) {
-            if (Random.Range(0, 100) < castProbabilityPercentage && timeSinceCast > castCoolOff) {
-                animator.SetTrigger("Cast");
+        if (Vector2.Distance(player.position, rb.position) <= attackRange) {
+            animator.SetTrigger("Attack");
+        } else {
+            // Check every interval, not checking every frame 
+            if (Time.time >= nextTime) {
+                if (Random.Range(0, 100) < castProbabilityPercentage && timeSinceCast > castCoolOff) {
+                    animator.SetTrigger("Cast");
+                }
+                nextTime += interval;
             }
-            nextTime += interval;
+            rb.MovePosition(newPos);
         }
-        rb.MovePosition(newPos);
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+       animator.ResetTrigger("Attack");
        timeSinceCast = 0;
     }
 

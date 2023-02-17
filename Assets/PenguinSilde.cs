@@ -6,9 +6,9 @@ public class PenguinSilde : StateMachineBehaviour
 {
     Rigidbody2D rb;
 
-    public float slideDuration = 3.0f;
+    public float slideDuration = 5.0f;
     public bool slideFlag = false;
-    public float speed = 3.5f;
+    public float speed = 8.0f;
     private float slideStartTime = 0;
     private float moveToX;
     
@@ -17,7 +17,6 @@ public class PenguinSilde : StateMachineBehaviour
     {
       rb = animator.transform.GetComponent<Rigidbody2D>();
       moveToX = animator.GetFloat("MoveToX");
-
     //    penguin = animator.transform.GetComponent<Penguin>();
     }
 

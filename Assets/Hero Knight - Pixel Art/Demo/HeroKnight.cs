@@ -11,9 +11,9 @@ public class HeroKnight : CombatCharacter {
     [SerializeField] public KeyCode m_key_block = KeyCode.P;
     [SerializeField] public KeyCode m_key_changePhase = KeyCode.Y;
 
-    [SerializeField] float      m_runForce = 15.0f;
-    [SerializeField] float      m_maxSpeed = 20.0f;
-    [SerializeField] float      m_jumpForce = 7.5f;
+    [SerializeField] float      m_runForce = 10.0f;
+    [SerializeField] float      m_maxSpeed = 10.0f;
+    [SerializeField] float      m_jumpForce = 5f;
     [SerializeField] float      m_maxJumpSpeed = 15f;
     [SerializeField] float      m_rollForce = 6.0f;
     [SerializeField] bool       m_noBlood = false;
@@ -35,7 +35,7 @@ public class HeroKnight : CombatCharacter {
 
     private float elapsedTime = 0f;
     public bool onRhythm = false; 
-    public ComposerScript composer;
+    // public ComposerScript composer;
 
     public float attackRange = 0.5f;
     public float attackRate = 2;
@@ -83,6 +83,7 @@ public class HeroKnight : CombatCharacter {
     // public EnergyBar            energyBar;
     public GameObject           DialogueSystem;
     public TMP_Text             DebuffDisplay;
+    public GameObject           RetryBtn;
 
     [SerializeField] private SimpleFlash         flashEffect;
 
@@ -171,7 +172,7 @@ public class HeroKnight : CombatCharacter {
     // Update is called once per frame
     void FixedUpdate ()
     {
-        onRhythm = composer.isOnRhythm();
+        // onRhythm = composer.isOnRhythm();
 
         // DebuffDisplay.text = "ice skater level " + (m_coefficient * 5.0f).ToString();
         ShowOnRhythm();
@@ -243,13 +244,13 @@ public class HeroKnight : CombatCharacter {
         // Move
         if (!m_rolling ) 
         {
-            //m_body2d.velocity = new Vector2(inputX * m_maxSpeed, m_body2d.velocity.y);
-            m_body2d.AddForce(Utils.ClampForce(new Vector2(inputX * m_maxSpeed * m_body2d.mass, 0), m_body2d.velocity, new Vector2(m_maxSpeed, 0), m_body2d));
+            m_body2d.velocity = new Vector2(inputX * m_maxSpeed, m_body2d.velocity.y);
+            // m_body2d.AddForce(Utils.ClampForce(new Vector2(inputX * m_maxSpeed * m_body2d.mass, 0), m_body2d.velocity, new Vector2(m_maxSpeed, 0), m_body2d));
 
             if ( Math.Abs(inputX) < 1e-6 && timer <= m_slip_time && Math.Abs(m_body2d.velocity.y) < 1e-6) {
                 timer += Time.deltaTime;
-                //m_body2d.velocity = new Vector2(m_maxSpeed * m_coefficient * m_facingDirection * (m_slip_time - timer), m_body2d.velocity.y); 
-                m_body2d.AddForce(new Vector2(m_maxSpeed * m_coefficient * m_facingDirection * (m_slip_time - timer) * m_body2d.mass, 0)); 
+                m_body2d.velocity = new Vector2(m_maxSpeed * m_coefficient * m_facingDirection * (m_slip_time - timer), m_body2d.velocity.y); 
+                // m_body2d.AddForce(new Vector2(m_maxSpeed * m_coefficient * m_facingDirection * (m_slip_time - timer) * m_body2d.mass, 0)); 
             }
         }
 
@@ -334,10 +335,10 @@ public class HeroKnight : CombatCharacter {
             m_animator.SetTrigger("Jump");
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
-            //m_body2d.velocity += new Vector2(0, m_jumpForce);
+            // m_body2d.velocity += new Vector2(0, m_jumpForce);
 
             m_body2d.AddForce(Utils.ClampForce(new Vector2(0, m_jumpForce), m_body2d.velocity, new Vector2(0, m_maxJumpSpeed), m_body2d), ForceMode2D.Impulse);
-            m_groundSensor.Disable(0.2f);
+            // m_groundSensor.Disable(0.2f);
         }
 
         // Change Phase
@@ -521,6 +522,7 @@ public class HeroKnight : CombatCharacter {
         m_animator.SetTrigger("Death");
         m_animator.SetBool("IsDead", true);
         DialogueSystem.GetComponent<DialogueSystem>().DisplayDialog(4);
+        RetryBtn.SetActive(true);
         this.enabled = false;
     }
 }

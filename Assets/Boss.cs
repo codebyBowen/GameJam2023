@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BarthaSzabolcs.Tutorial_SpriteFlash;
+using UnityEngine.SceneManagement;
 
 public class Boss : CombatCharacter
 {
@@ -21,22 +22,27 @@ public class Boss : CombatCharacter
     // break flags
     private bool firstBreak = false;
     private bool secondBreak = false;
+    private IEnumerator coroutine;
+    private BoxCollider2D       m_collider2d;
 
     // Start is called before the first frame update
     void Start()
     {
-        tenacity = 1000;
-        armorBroken = false;
+        // tenacity = 1000;
+        armorBroken = true;
         firstBreak = false;
         secondBreak = false;
 
         health.dieCB = Die;
 
         flashEffect = GetComponent<SimpleFlash>();
+        coroutine = WaitAndSwapScene(5);
+        m_collider2d = GetComponent<BoxCollider2D>();
+        
     }
 
     void FixedUpdate() {
-        tenacitySystem();
+        // tenacitySystem();
     }
 
     public override void takeDamage(AttackProp ap) {
@@ -49,21 +55,31 @@ public class Boss : CombatCharacter
         reduceTenacity(Damage.CalculateDamage(ap, this.attProp));
         if (armorBroken) {
             base.takeDamage(ap);
-            animator.SetTrigger("Hurt");
         }
     }
 
     void Die()
     {
         Debug.Log("Enemy died!");
-
+        float Timer = 0f;
+        
         animator.SetBool("IsDead", true);
 
         foreach(int eLayer in Utils.layersFromLayerMask(attackMask)) {
           Physics2D.IgnoreLayerCollision(gameObject.layer, eLayer, true);
         }
+        
+        m_collider2d.enabled = false;
+        
+        StartCoroutine(coroutine);
+        
+    }
 
-        this.enabled = false;
+    private IEnumerator WaitAndSwapScene(int waitTime)
+    {
+        Debug.Log("WaitAndSwapScene");
+        yield return new WaitForSeconds(waitTime);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void Attack()
@@ -79,7 +95,7 @@ public class Boss : CombatCharacter
 
         if (colInfo != null)
         {
-            Debug.Log("Boss Hit Player!!");
+            Debug.Log("Boss Hit Player!!" + attProp);
             colInfo.GetComponentInParent<CombatCharacter>().takeDamage(attProp);
         }
     }

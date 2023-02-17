@@ -25,11 +25,21 @@ public class StoryManager : MonoBehaviour
                 textDisplay.text += letter;
                 yield return new WaitForSeconds(typeSpeed); 
             } 
-            index +=1;
-            yield return new WaitForSeconds(3);
-            StartCoroutine(Type());
-        } else {
+            // index +=1;
+            // yield return new WaitForSeconds(3);
+            // StartCoroutine(Type());
+        } 
+        else {
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainGameScene");
+        }
+    }
+
+    public void ContinueDialogue()
+    {
+        Debug.Log("ContinueDialogue");
+        if (index < sentenses.Length - 1) {
+            index ++;
+            StartCoroutine(Type());
         }
     }
 }

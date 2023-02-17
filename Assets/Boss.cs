@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BarthaSzabolcs.Tutorial_SpriteFlash;
 
 public class Boss : CombatCharacter
 {
@@ -15,6 +16,8 @@ public class Boss : CombatCharacter
     public float tenacity; // or called armor?
     public bool armorBroken = false;
 
+    private SimpleFlash flashEffect;
+
     // break flags
     private bool firstBreak = false;
     private bool secondBreak = false;
@@ -28,6 +31,8 @@ public class Boss : CombatCharacter
         secondBreak = false;
 
         health.dieCB = Die;
+
+        flashEffect = GetComponent<SimpleFlash>();
     }
 
     void FixedUpdate() {
@@ -35,12 +40,16 @@ public class Boss : CombatCharacter
     }
 
     public override void takeDamage(AttackProp ap) {
+
         // take damage only when armor is broken
         // currentHealth -= damage;
+        if (flashEffect) {
+            flashEffect.Flash();
+        }
         reduceTenacity(Damage.CalculateDamage(ap, this.attProp));
-        animator.SetTrigger("Hurt");
         if (armorBroken) {
             base.takeDamage(ap);
+            animator.SetTrigger("Hurt");
         }
     }
 

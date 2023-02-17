@@ -510,7 +510,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &174866062
 Transform:
   m_ObjectHideFlags: 0
@@ -739,16 +739,17 @@ GameObject:
   - component: {fileID: 312039193}
   - component: {fileID: 312039196}
   - component: {fileID: 312039190}
-  - component: {fileID: 312039194}
   - component: {fileID: 312039191}
   - component: {fileID: 312039195}
+  - component: {fileID: 312039197}
+  - component: {fileID: 312039194}
   m_Layer: 6
   m_Name: Bringer Of Death
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!60 &312039190
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -848,11 +849,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 312039189}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30f8819c1402f4e62b9ec37fa37729ab, type: 3}
+  m_Script: {fileID: 11500000, guid: d63c7775a7f2a44c5ac0c6b24a58211d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 312039191}
-  attProp: {fileID: 312039195}
+  flashMaterial: {fileID: 2100000, guid: d19a783a6d58240b093f624d0fb79156, type: 2}
+  duration: 0.125
+  spriteRenderer: {fileID: 1758743104}
 --- !u!114 &312039195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -867,7 +869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   phase: 0
   damage:
-    InitVal: 0
+    InitVal: 20
   damageType: 0
 --- !u!50 &312039196
 Rigidbody2D:
@@ -881,7 +883,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 10
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -890,6 +892,30 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &312039197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312039189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b115e4dca8cd471e88828053f69de4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 312039191}
+  attProp: {fileID: 312039195}
+  animator: {fileID: 1758743105}
+  attackOffset: {x: -0.59, y: -1.57, z: 0}
+  attackRange: 1
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 128
+  spellPrefab: {fileID: 4409766667928789182, guid: 20a49f95a61d0b946b112c0479a6feb3, type: 3}
+  SpellGenerator: {fileID: 1669486825}
+  tenacity: 0
+  armorBroken: 0
 --- !u!1 &367336815
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,8 +1132,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioPrefab: {fileID: 711938091}
   scaleType: 0
-  baseNote: 3
-  numOctaves: 3
+  baseNote: 0
+  numOctaves: 0
   isChordMode: 1
   isChordProgressionMode: 1
   randomTimeMode: 0
@@ -1116,36 +1142,6 @@ MonoBehaviour:
   fileLoadStats: 0
   rhythmDurationPre: 0.2
   rhythmDurationPost: 0.5
---- !u!1 &508364079
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 508364080}
-  m_Layer: 6
-  m_Name: SpellGenerator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &508364080
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 508364079}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.62, y: -0.8540001, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 99068008}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &522534355
 GameObject:
   m_ObjectHideFlags: 0
@@ -2073,22 +2069,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 1000
-  currentHP: 490
+  currentHP: 1000
   healthBar: {fileID: 569304789}
---- !u!114 &1030586601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1030586599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30f8819c1402f4e62b9ec37fa37729ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 1030586600}
-  attProp: {fileID: 1030586602}
 --- !u!114 &1030586602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2133,6 +2115,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8413529789942519730, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
   m_PrefabInstance: {fileID: 6855557595897071052}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1030586611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030586599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d63c7775a7f2a44c5ac0c6b24a58211d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashMaterial: {fileID: 2100000, guid: d19a783a6d58240b093f624d0fb79156, type: 2}
+  duration: 0.125
+  spriteRenderer: {fileID: 0}
 --- !u!1 &1047062126
 GameObject:
   m_ObjectHideFlags: 0
@@ -3801,30 +3798,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1030586610}
-    - target: {fileID: 99068009, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
-      propertyPath: shockWavePrefab
-      value: 
-      objectReference: {fileID: 3224901984184108291, guid: b3919df6e073d4052ba324ee94a8e1c8, type: 3}
-    - target: {fileID: 99068009, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
-      propertyPath: ShockWavePosition
-      value: 
-      objectReference: {fileID: 508364080}
     - target: {fileID: 1072659794, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 813214327}
-    - target: {fileID: 1072659795, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 137868433993275091, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
-      propertyPath: spellPrefab
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137868433993275091, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
-      propertyPath: SpellGenerator
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 7957117317339829925, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
       propertyPath: m_Name
       value: Penguin
@@ -3872,10 +3849,6 @@ PrefabInstance:
     - target: {fileID: 7957117317339829946, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7957117317339829950, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
-      propertyPath: m_Constraints
-      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
@@ -4094,7 +4067,6 @@ GameObject:
   - component: {fileID: 1758743103}
   - component: {fileID: 1758743104}
   - component: {fileID: 1758743105}
-  - component: {fileID: 1758743106}
   m_Layer: 6
   m_Name: BossSprite
   m_TagString: Untagged
@@ -4186,30 +4158,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1758743106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1758743102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b115e4dca8cd471e88828053f69de4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 312039191}
-  attProp: {fileID: 312039195}
-  animator: {fileID: 1758743105}
-  attackOffset: {x: -0.59, y: -1.57, z: 0}
-  attackRange: 1
-  attackMask:
-    serializedVersion: 2
-    m_Bits: 128
-  spellPrefab: {fileID: 4409766667928789182, guid: 20a49f95a61d0b946b112c0479a6feb3, type: 3}
-  SpellGenerator: {fileID: 1669486825}
-  tenacity: 0
-  armorBroken: 0
 --- !u!1 &1871155417
 GameObject:
   m_ObjectHideFlags: 0
@@ -5067,6 +5015,10 @@ PrefabInstance:
     - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
       propertyPath: energyIncrement
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
+      propertyPath: m_key_changePhase
+      value: 101
       objectReference: {fileID: 0}
     - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
       propertyPath: fireColor.Array.size

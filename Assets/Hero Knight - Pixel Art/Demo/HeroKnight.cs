@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using System.Linq;
 using TMPro;
+using BarthaSzabolcs.Tutorial_SpriteFlash;
 
 public class HeroKnight : CombatCharacter {
 
@@ -83,6 +84,8 @@ public class HeroKnight : CombatCharacter {
     public GameObject           DialogueSystem;
     public TMP_Text             DebuffDisplay;
 
+    [SerializeField] private SimpleFlash         flashEffect;
+
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
 
@@ -102,6 +105,7 @@ public class HeroKnight : CombatCharacter {
         m_body2d = GetComponent<Rigidbody2D>();
         m_collider2d = GetComponent<BoxCollider2D>();
         colorSwap = GetComponent<ColorSwap_HeroKnight>();
+        flashEffect = GetComponent<SimpleFlash>();
 
         health.dieCB = PlayerDie;
         attProp.onPhaseChange = onPhaseChange;
@@ -149,6 +153,9 @@ public class HeroKnight : CombatCharacter {
     }
 
     public override void takeDamage(AttackProp ap) {
+      // Make sprite flash
+      flashEffect.Flash();
+
       float damage = Damage.CalculateDamage(ap, attProp);
       if(ap.damageType == DamageType.Physical) {
         damage -= blockDamage;

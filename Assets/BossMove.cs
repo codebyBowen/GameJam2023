@@ -9,7 +9,6 @@ public class BossMove : StateMachineBehaviour
     BringerOfDeath boss;
 
     public float speed = 2.5f;
-    public float attackRange = 4f;
 
     public float castCoolOff = 4.0f;
     public float firstCastAt = 1.0f;
@@ -45,24 +44,19 @@ public class BossMove : StateMachineBehaviour
         Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
 
 
-        if (Vector2.Distance(player.position, rb.position) <= attackRange) {
-            animator.SetTrigger("Attack");
-        } else {
-            // Check every interval, not checking every frame 
-            if (Time.time >= nextTime) {
-                if (Random.Range(0, 100) < castProbabilityPercentage && timeSinceCast > castCoolOff) {
-                    animator.SetTrigger("Cast");
-                }
-                nextTime += interval;
+        // Check every interval, not checking every frame 
+        if (Time.time >= nextTime) {
+            if (Random.Range(0, 100) < castProbabilityPercentage && timeSinceCast > castCoolOff) {
+                animator.SetTrigger("Cast");
             }
-            rb.MovePosition(newPos);
+            nextTime += interval;
         }
+        rb.MovePosition(newPos);
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       animator.ResetTrigger("Attack");
        timeSinceCast = 0;
     }
 

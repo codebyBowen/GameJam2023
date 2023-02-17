@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 public static class Utils {
@@ -13,4 +14,20 @@ public static class Utils {
     }
     return layers.ToArray();
   }
+
+  public static Vector2 ClampForce(Vector2 force, Vector2 currVelocity, Vector2 maxVelocityMagnitude, Rigidbody2D body) {
+    Vector2 rst = new Vector2();
+    for(int i = 0; i < 2; i++) {
+      if(force[i] * currVelocity[i] >= 0) {
+        // Force same direction as currVelocity or 0 force
+        rst[i] = Math.Min(force[i], body.mass * (maxVelocityMagnitude[i] - currVelocity[i]));
+      } else {
+        rst[i] = Math.Max(force[i], body.mass * (maxVelocityMagnitude[i] + currVelocity[i]));
+      }
+    }
+
+    return rst;
+  }
+
 }
+

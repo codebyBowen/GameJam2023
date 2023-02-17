@@ -8,7 +8,6 @@ public class ReduceAttackDamage : NegativeEffect {
   public void init(float factor, float? durationSec) {
     base.init(durationSec);
     this.factor = factor;
-    Debug.Assert(factor < 1.0F);
 
     __mod = new ValueModification<float>(
           Expression.MakeBinary(ExpressionType.MultiplyChecked, ValueModification<float>.PlaceHolder, Expression.Constant(factor)),

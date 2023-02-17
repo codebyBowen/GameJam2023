@@ -15,7 +15,7 @@ public class Health : MonoBehaviour {
     }
   }
 
-  public void changeHP(float change) {
+  public virtual void changeHP(float change) {
     currentHP = Math.Min(currentHP + change, maxHP);
     if(currentHP <= 0.0F) {
       currentHP = 0.0F;

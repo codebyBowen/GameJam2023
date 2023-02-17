@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Linq;
 using TMPro;
 
 public class HeroKnight : CombatCharacter {
@@ -145,7 +146,7 @@ public class HeroKnight : CombatCharacter {
       }
     }
 
-    public void takeDamage(AttackProp ap) {
+    public override void takeDamage(AttackProp ap) {
       float damage = Damage.CalculateDamage(ap, attProp);
       if(ap.damageType == DamageType.Physical) {
         damage -= blockDamage;
@@ -326,8 +327,9 @@ public class HeroKnight : CombatCharacter {
         // Change Phase
         else if (Input.GetKeyDown(m_key_changePhase) && musicEnergy == maxMusicEnergy) {
           // TODO: allow player to choose what phase to change to?
-          var vals = Enum.GetValues(typeof(Phase));
-          attProp.setPhase((Phase)vals.GetValue(UnityEngine.Random.Range(0, vals.Length)));
+          var vals = ((Phase[])Enum.GetValues(typeof(Phase))).ToList<Phase>();
+          vals.Remove(attProp.phase);
+          attProp.setPhase(vals[UnityEngine.Random.Range(0, vals.Count)]);
           setMusicEnergy(0);
           // recover full health
           health.changeHP(health.maxHP - health.currentHP);

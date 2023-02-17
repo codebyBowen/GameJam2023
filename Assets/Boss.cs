@@ -34,12 +34,12 @@ public class Boss : CombatCharacter
         tenacitySystem();
     }
 
-    public void takeDamage(AttackProp ap) {
+    public override void takeDamage(AttackProp ap) {
         // take damage only when armor is broken
         // currentHealth -= damage;
         reduceTenacity(Damage.CalculateDamage(ap, this.attProp));
+        animator.SetTrigger("Hurt");
         if (armorBroken) {
-            animator.SetTrigger("Hurt");
             base.takeDamage(ap);
         }
     }
@@ -50,7 +50,9 @@ public class Boss : CombatCharacter
 
         animator.SetBool("IsDead", true);
 
-        GetComponentInParent<Collider2D>().enabled = false;
+        foreach(int eLayer in Utils.layersFromLayerMask(attackMask)) {
+          Physics2D.IgnoreLayerCollision(gameObject.layer, eLayer, true);
+        }
 
         this.enabled = false;
     }

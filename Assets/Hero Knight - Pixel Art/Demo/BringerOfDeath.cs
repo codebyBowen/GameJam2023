@@ -43,7 +43,6 @@ public class BringerOfDeath : MonoBehaviour {
     private float               timer = 0.0f;
 
 // string[] weekDays = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-    private string[] attackSequence = new string[] {"Attack1","Attack1","Attack2","Attack3"};
 
 
 
@@ -128,7 +127,7 @@ public class BringerOfDeath : MonoBehaviour {
         // -- Handle Animations --
         //Wall Slide
         m_isWallSliding = (m_wallSensorR1.State() && m_wallSensorR2.State()) || (m_wallSensorL1.State() && m_wallSensorL2.State());
-        m_animator.SetBool("WallSlide", m_isWallSliding);
+        //m_animator.SetBool("WallSlide", m_isWallSliding);
 
         //Death
         if (Input.GetKeyDown("e") && !m_rolling)
@@ -153,9 +152,6 @@ public class BringerOfDeath : MonoBehaviour {
             // Reset Attack combo if time since last attack is too large
             if (m_timeSinceAttack > 1.0f)
                 m_currentAttack = 1;
-
-            // Call one of three attack animations "Attack1", "Attack2", "Attack3"
-            m_animator.SetTrigger(attackSequence[m_currentAttack-1]);
 
             // Reset timer
             m_timeSinceAttack = 0.0f;
@@ -195,7 +191,7 @@ public class BringerOfDeath : MonoBehaviour {
         {
             // Reset timer
             m_delayToIdle = 0.05f;
-            m_animator.SetInteger("AnimState", 1);
+            //m_animator.SetInteger("AnimState", 1);
         }
 
         //Idle
@@ -203,8 +199,9 @@ public class BringerOfDeath : MonoBehaviour {
         {
             // Prevents flickering transitions to idle
             m_delayToIdle -= Time.deltaTime;
-                if(m_delayToIdle < 0)
-                    m_animator.SetInteger("AnimState", 0);
+                if(m_delayToIdle < 0) {
+                    //m_animator.SetInteger("AnimState", 0);
+                }
         }
     }
 

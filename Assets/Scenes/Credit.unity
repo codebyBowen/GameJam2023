@@ -764,7 +764,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: B.JIANG  T.ZHOU  X.ZHANG
+  m_text: B.JIANG T.ZHOU X. L. Yu
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c6fab6a9a1fcd644ea614f0dfaee2382, type: 2}
   m_sharedMaterial: {fileID: -1894854887648269464, guid: c6fab6a9a1fcd644ea614f0dfaee2382, type: 2}
@@ -827,7 +827,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -371.66797, w: -149.20538}
+  m_margin: {x: 0, y: 0, z: -396.66406, w: -149.20538}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1352,7 +1352,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: B.JIANG  T.ZHOU  X.ZHANG
+  m_text: B.JIANG T.ZHOU X. L. Yu
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c6fab6a9a1fcd644ea614f0dfaee2382, type: 2}
   m_sharedMaterial: {fileID: -1894854887648269464, guid: c6fab6a9a1fcd644ea614f0dfaee2382, type: 2}
@@ -1415,7 +1415,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -371.66797, w: -164.27399}
+  m_margin: {x: 0, y: 0, z: -419.1289, w: -164.27399}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

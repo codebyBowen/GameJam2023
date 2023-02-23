@@ -263,6 +263,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
+      propertyPath: m_key_changePhase
+      value: 101
+      objectReference: {fileID: 0}
+    - target: {fileID: 9043920546160527475, guid: a4b4a6d32bcb19248a754d6602ffc7e4, type: 3}
       propertyPath: fireColor.Array.size
       value: 5
       objectReference: {fileID: 0}
@@ -4983,6 +4987,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 36161646}
+    - target: {fileID: 1072659794, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
+      propertyPath: maxHP
+      value: 2000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1072659794, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
+      propertyPath: currentHP
+      value: 2000
+      objectReference: {fileID: 0}
     - target: {fileID: 1072659794, guid: 47cff0f715854cd498c29dd6e9d33c06, type: 3}
       propertyPath: healthBar
       value: 

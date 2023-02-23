@@ -18,6 +18,6 @@ public class SkipScene : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("SecondBossScene");
     }
     public void WatchCredits() {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Credits");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Credit");
     }
 }

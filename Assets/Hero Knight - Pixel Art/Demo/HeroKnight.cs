@@ -9,7 +9,7 @@ public class HeroKnight : CombatCharacter {
 
     [SerializeField] public KeyCode m_key_attack = KeyCode.L;
     [SerializeField] public KeyCode m_key_block = KeyCode.P;
-    [SerializeField] public KeyCode m_key_changePhase = KeyCode.Y;
+    [SerializeField] public KeyCode m_key_changePhase = KeyCode.E;
 
     [SerializeField] float      m_runForce = 10.0f;
     [SerializeField] float      m_maxSpeed = 10.0f;

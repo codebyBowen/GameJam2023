@@ -65,13 +65,13 @@ public class Boss : CombatCharacter
         
         animator.SetBool("IsDead", true);
 
+        UnityEngine.SceneManagement.SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
         foreach(int eLayer in Utils.layersFromLayerMask(attackMask)) {
           Physics2D.IgnoreLayerCollision(gameObject.layer, eLayer, true);
         }
         
         m_collider2d.enabled = false;
-        
-        StartCoroutine(coroutine);
         
     }
 
